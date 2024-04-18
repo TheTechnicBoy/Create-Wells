@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "/": {
+      "tag": "forge:rods/wooden"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "R": {
+      "tag": "forge:ingots/brick"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "/L/",
+    "SBS"
+  ],
+  "result": {
+    "item": "create_wells:mechanical_well"
+  },
+  "show_notification": false
+}

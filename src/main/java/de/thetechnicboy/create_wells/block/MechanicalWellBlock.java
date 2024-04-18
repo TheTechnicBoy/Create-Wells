@@ -5,7 +5,9 @@ import de.thetechnicboy.create_wells.block.entity.MechanicalWellBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -113,6 +115,11 @@ public class MechanicalWellBlock extends BaseEntityBlock {
     }
 
     @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        level.setBlockAndUpdate(pos.above(state.getValue(UPSIDE_DOWN) ? -1 : 1), state.setValue(HALF, DoubleBlockHalf.UPPER));
+    }
+
+    @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide) {
             if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
@@ -204,7 +211,6 @@ public class MechanicalWellBlock extends BaseEntityBlock {
 
         return buffer[1];
     }
-
     public static VoxelShape flipShapeUpsideDown(VoxelShape shape) {
         VoxelShape[] buffer = new VoxelShape[] { shape, Shapes.empty() };
         buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {

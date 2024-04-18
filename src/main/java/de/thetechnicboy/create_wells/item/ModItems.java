@@ -3,6 +3,7 @@ package de.thetechnicboy.create_wells.item;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

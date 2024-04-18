@@ -1,0 +1,15 @@
+{
+    "type": "create_wells:fluid_extraction",
+    "condition": {
+        "isUpsideDown": false,
+        "biome": "minecraft:plains",
+        "dimension": "minecraft:overworld",
+        "yMin": 64,
+        "yMax": 64
+    },
+    "output": {
+        "fluid": "minecraft:water",
+        "amount": 1,
+        "speed": 20
+    }
+}

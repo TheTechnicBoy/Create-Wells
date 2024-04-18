@@ -1,0 +1,37 @@
+modLoader="javafml" #mandatory
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+#updateJSONURL="https://change.me.example.invalid/updates.json"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+#logoFile="create_wells.png"
+#credits="Thanks for this example mod goes to Java"
+authors="${mod_authors}"
+#displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
+description='''${mod_description}'''
+
+[[dependencies."${mod_id}"]]
+   modId="forge"
+   mandatory=true
+   versionRange="${forge_version_range}"
+   ordering="NONE"
+   side="BOTH"
+
+[[dependencies."${mod_id}"]]
+   modId="minecraft"
+   mandatory=true
+   versionRange="${minecraft_version_range}"
+   ordering="NONE"
+   side="BOTH"
+
+[[dependencies."${mod_id}"]]
+modId="create"
+mandatory=true
+versionRange="[0.5.1.f,)"
+ordering="NONE"
+side="BOTH"

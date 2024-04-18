@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.thetechnicboy.create_wells.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "create_wells.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

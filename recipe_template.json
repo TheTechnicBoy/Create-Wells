@@ -1,9 +1,9 @@
 {
     "type": "create_wells:fluid_extraction",
     "condition": {
-        "isUpsideDown": false,
-        "biome": "minecraft:plains",
-        "dimension": "minecraft:overworld",
+        "direction": "BOTH",
+        "biome": ["minecraft:plains"],
+        "dimension": ["minecraft:overworld"],
         "yMin": 64,
         "yMax": 64
     },

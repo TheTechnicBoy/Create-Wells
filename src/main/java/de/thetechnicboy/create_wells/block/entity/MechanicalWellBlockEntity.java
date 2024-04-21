@@ -2,29 +2,25 @@ package de.thetechnicboy.create_wells.block.entity;
 
 import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidHandlerBlockEntity;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
 
@@ -39,25 +35,15 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, MechanicalWellBlockEntity be){
-        if(be.delayUntilNextBucket > 0){
-            be.delayUntilNextBucket--;
-        }
-
         if(be.fillTick > 0){
             be.fillTick--;
             be.setChanged();
         }
 
         if(be.fillTick <= 0){
-            FluidStack fluidToFill = be.getFluidToFill();
-            int result = 0;
-            if(fluidToFill != null){
-                result = be.tank.fill(fluidToFill, IFluidHandler.FluidAction.EXECUTE);
-            }
-            if(result > 0){
-                be.initFillTick();
-                be.setChanged();
-            }
+            FluidExtractionRecipe.FluidOutput fluidToFill = be.getFluidToFill();
+            be.tank.fill(new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount()), IFluidHandler.FluidAction.EXECUTE);
+            be.fillTick = fluidToFill.getSpeed();
         }
     }
     @Override
@@ -65,7 +51,7 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
         if(!initialized){
             initialized = true;
             if(!level.isClientSide){
-                initFillTick();
+                fillTick = getFluidToFill().getSpeed();
             }
         }
 
@@ -73,20 +59,46 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
-    protected FluidStack getFluidToFill(){
-        return new FluidStack(Fluids.LAVA, 10);
-    }
-    protected void initFillTick(){
-        fillTick = 1;
+
+    protected FluidExtractionRecipe.FluidOutput getFluidToFill(){
+
+        List<FluidExtractionRecipe> recipes = new ArrayList<>();
+
+        level.getRecipeManager().getRecipes().forEach(recipe -> {
+            if(recipe instanceof FluidExtractionRecipe) recipes.add( (FluidExtractionRecipe) recipe);
+        });
+
+        for(int i = 0; i < recipes.size(); i++){
+            FluidExtractionRecipe recipe                = recipes.get(i);
+            boolean Success                             = true;
+            FluidExtractionRecipe.Condition conditions  = recipe.getCondition();
+            FluidExtractionRecipe.FluidOutput output    = recipe.getOutput();
+            int yPos                                    = getYPos();
+            boolean UpsideDown                          = isUpsideDown();
+            ResourceLocation biome                      = getBiome();
+            ResourceLocation dimension                  = getDimension();
+
+            if(yPos < conditions.getYMin() && conditions.getYMin() != -255) Success = false;
+            if(yPos > conditions.getYMax() && conditions.getYMax() != -255) Success = false;
+
+            if(conditions.getDirection() == FluidExtractionRecipe.Direction.NORMAL && UpsideDown) Success = false;
+            if(conditions.getDirection() == FluidExtractionRecipe.Direction.UPSIDE_DOWN && !UpsideDown) Success = false;
+
+            if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(dimension)) Success = false;
+            if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(biome)) Success = false;
+
+            if(Success) return output;
+        };
+        return new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0, 0);
     }
 
 
     public boolean isUpsideDown(){
         return this.getBlockState().getValue(MechanicalWellBlock.UPSIDE_DOWN);
     }
-    public Biome getBiome(){ return this.getLevel().getBiome(this.getBlockPos()).get();}
+    public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).get()); }
     public int getYPos(){ return this.getBlockPos().getY() ;}
-    public DimensionType getDimension(){ return this.getLevel().dimensionType();}
+    public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
 
 
     @Override

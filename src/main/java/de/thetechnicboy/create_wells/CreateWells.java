@@ -7,13 +7,8 @@ import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.recipe.ModRecipes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -25,7 +20,7 @@ import org.slf4j.Logger;
 public class CreateWells {
 
     public static final String MODID = "create_wells";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public CreateWells() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -37,7 +32,6 @@ public class CreateWells {
         modEventBus.addListener(this::onClientSetup);
         modEventBus.addListener(this::buildContents);
 
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -49,8 +43,4 @@ public class CreateWells {
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));
     }
 
-
-    private void onServerStarting(ServerStartingEvent event){
-        if(!ModRecipes.RECIPES.isEmpty()) ModRecipes.RECIPES.clear();
-    }
 }

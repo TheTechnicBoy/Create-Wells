@@ -1,6 +1,6 @@
 # Create Wells
 
-This mod adds wells to Minecraft, enhancing the exploration and crafting experience. It is an extension and adaptation of cubicoder's Well Mod, which you can find [here](https://github.com/cubicoder/Well-Mod).
+This mod adds wells to Minecraft, enhancing the exploration and fluid generation experience. It is an extension and adaptation of cubicoder's Well Mod, which you can find [here](https://github.com/cubicoder/Well-Mod).
 
 ## Features
 - **Custom Recipes**: Create your own recipes for wells using datapacks.

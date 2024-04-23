@@ -1,0 +1,13 @@
+{
+    "type": "create_wells:fluid_extraction",
+    "condition": {
+        "dimension": [
+            "minecraft:the_nether"
+        ]
+    },
+    "output": {
+        "fluid": "minecraft:lava",
+        "amount": 100,
+        "speed": 50
+    }
+}

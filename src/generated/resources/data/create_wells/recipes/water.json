@@ -1,0 +1,13 @@
+{
+    "type": "create_wells:fluid_extraction",
+    "condition": {
+        "dimension": [
+            "minecraft:overworld"
+        ]
+    },
+    "output": {
+        "fluid": "minecraft:water",
+        "amount": 100,
+        "speed": 100
+    }
+}

@@ -90,6 +90,14 @@ repositories {
         url = 'https://maven.tterrag.com/'
     }
     maven {
+        url = 'https://maven.architectury.dev'
+        name = 'architectury maven'
+    }
+    maven {
+        url = 'https://maven.saps.dev/minecraft'
+        name = 'saps.dev Maven'
+    }
+    maven {
         name = "Progwml6's maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
@@ -111,6 +119,9 @@ dependencies {
     implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")

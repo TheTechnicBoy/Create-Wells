@@ -30,8 +30,15 @@ description='''${mod_description}'''
    side="BOTH"
 
 [[dependencies."${mod_id}"]]
-modId="create"
-mandatory=true
-versionRange="[0.5.1.f,)"
-ordering="NONE"
-side="BOTH"
+   modId="create"
+   mandatory=true
+   versionRange="[0.5.1.f,)"
+   ordering="NONE"
+   side="BOTH"
+
+[[dependencies."${mod_id}"]]
+   modId="jei"
+   mandatory=false
+   versionRange="[15.3.0.4,)"
+   ordering="NONE"
+   side="BOTH"

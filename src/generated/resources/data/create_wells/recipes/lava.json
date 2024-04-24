@@ -1,6 +1,7 @@
 {
     "type": "create_wells:fluid_extraction",
     "condition": {
+        "direction" : "BOTH",
         "dimension": [
             "minecraft:the_nether"
         ]

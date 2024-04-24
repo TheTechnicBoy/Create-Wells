@@ -48,7 +48,7 @@ public class CreateWellsJEI implements IModPlugin {
                 .addTypedRecipes(() -> ModRecipes.FLUID_EXTRACTION_TYPE)
                 .catalyst(ModBlocks.MECHANICAL_WELL::get)
                 .itemIcon(ModBlocks.MECHANICAL_WELL.get())
-                .emptyBackground(175, 50)
+                .emptyBackground(180, 80)
                 .build("fluid_extraction", FluidExtractionCategory::new)
         );
 

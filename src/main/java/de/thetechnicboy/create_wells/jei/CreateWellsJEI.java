@@ -49,7 +49,7 @@ public class CreateWellsJEI implements IModPlugin {
                 .catalyst(ModBlocks.MECHANICAL_WELL::get)
                 .itemIcon(ModBlocks.MECHANICAL_WELL.get())
                 .emptyBackground(175, 50)
-                .build("fluid_extraction", FluixExtrationCategory::new)
+                .build("fluid_extraction", FluidExtractionCategory::new)
         );
 
         ALL.forEach(registration::addRecipeCategories);

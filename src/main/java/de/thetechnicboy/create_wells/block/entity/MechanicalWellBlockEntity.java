@@ -77,6 +77,7 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
             boolean UpsideDown                          = isUpsideDown();
             ResourceLocation biome                      = getBiome();
             ResourceLocation dimension                  = getDimension();
+            ResourceLocation block                      = getBelowBlock();
 
             if(yPos < conditions.getYMin() && conditions.getYMin() != -255) Success = false;
             if(yPos > conditions.getYMax() && conditions.getYMax() != -255) Success = false;
@@ -86,6 +87,8 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
 
             if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(dimension)) Success = false;
             if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(biome)) Success = false;
+
+            if(conditions.getBlock() != null && !conditions.getBlock().equals(block)) Success = false;
 
             if(Success) return output;
         };
@@ -99,6 +102,13 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
     public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).get()); }
     public int getYPos(){ return this.getBlockPos().getY() ;}
     public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
+
+    public ResourceLocation getBelowBlock()
+    {
+        BlockPos otherPos = this.getBlockPos().below(isUpsideDown() ? -1 : 1);
+        Block block = level.getBlockState(otherPos).getBlock();
+        return this.getLevel().registryAccess().registryOrThrow(Registries.BLOCK).getKey(block);
+    }
 
 
     @Override

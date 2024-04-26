@@ -174,6 +174,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final List<ResourceLocation> dimension;
         private final int yMin;
         private final int yMax;
+        private final ResourceLocation block;
 
         public Direction getDirection() {
             return direction;
@@ -190,13 +191,17 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         public int getYMax() {
             return yMax;
         }
+        public ResourceLocation getBlock() {
+            return block;
+        }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax) {
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block) {
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
             this.yMin = yMin;
             this.yMax = yMax;
+            this.block = block;
         }
 
         public static Condition fromJSON(JsonObject jsonObject) {
@@ -205,6 +210,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             List<ResourceLocation> biomes = new ArrayList<>();
             int yMin = -255;
             int yMax = -255;
+            ResourceLocation block = null;
 
             try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ex) {}
             Direction direction;
@@ -228,10 +234,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
                 }
             } catch (Exception ex) {}
 
+            try{ block = new ResourceLocation(jsonObject.get("block").getAsString()); } catch (Exception ex) {}
+
             try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ex) {}
             try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ex) {}
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block);
         }
 
         public static Condition fromPacket(FriendlyByteBuf buf) {
@@ -257,7 +265,9 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMin = buf.readInt();
             int yMax = buf.readInt();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax);
+            ResourceLocation block = buf.readResourceLocation();
+
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -277,6 +287,8 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             buf.writeInt(this.yMin);
             buf.writeInt(this.yMax);
+
+            buf.writeResourceLocation(this.block);
         }
     }
 

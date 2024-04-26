@@ -53,7 +53,10 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
     public void draw(FluidExtractionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY){
         super.draw(recipe, recipeSlotsView, graphics, mouseX, mouseY);
 
-        AnimatedMechanicalWell well = new AnimatedMechanicalWell(recipe.getCondition().getDirection());
+        AnimatedMechanicalWell well;
+        if(recipe.getCondition().getBlock() != null) well = new AnimatedMechanicalWell(recipe.getCondition().getDirection(), ForgeRegistries.BLOCKS.getValue(recipe.getCondition().getBlock()));
+        else well = new AnimatedMechanicalWell(recipe.getCondition().getDirection());
+        
         well.draw(graphics, getBackground().getWidth() / 2 - 17, 22);
     }
 

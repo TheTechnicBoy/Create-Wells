@@ -5,7 +5,8 @@
         "biome": ["minecraft:plains"],
         "dimension": ["minecraft:overworld"],
         "yMin": 64,
-        "yMax": 64
+        "yMax": 64,
+        "block": "minecraft:stone"
     },
     "output": {
         "fluid": "minecraft:water",

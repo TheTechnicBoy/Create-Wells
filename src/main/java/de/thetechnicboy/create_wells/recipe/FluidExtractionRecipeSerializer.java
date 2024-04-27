@@ -5,7 +5,6 @@ import de.thetechnicboy.create_wells.CreateWells;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-
 import org.jetbrains.annotations.Nullable;
 
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {

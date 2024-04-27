@@ -11,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
-
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider {

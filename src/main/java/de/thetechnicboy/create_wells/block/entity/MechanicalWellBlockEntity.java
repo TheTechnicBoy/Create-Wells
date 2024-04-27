@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidHandlerBlockEntity;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-
+import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,37 +63,45 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
 
     protected FluidExtractionRecipe.FluidOutput getFluidToFill(){
 
-        List<FluidExtractionRecipe> recipes = new ArrayList<>();
+        List<FluidExtractionRecipe> _AllRecipes = new ArrayList<>();
+        List<FluidExtractionRecipe> _Recipes = new ArrayList<>();
+        FluidExtractionRecipe.FluidOutput OUTPUT = new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0, 0);
 
         level.getRecipeManager().getRecipes().forEach(recipe -> {
-            if(recipe instanceof FluidExtractionRecipe) recipes.add( (FluidExtractionRecipe) recipe);
+            if(recipe instanceof FluidExtractionRecipe) _AllRecipes.add( (FluidExtractionRecipe) recipe);
         });
 
-        for(int i = 0; i < recipes.size(); i++){
-            FluidExtractionRecipe recipe                = recipes.get(i);
-            boolean Success                             = true;
-            FluidExtractionRecipe.Condition conditions  = recipe.getCondition();
-            FluidExtractionRecipe.FluidOutput output    = recipe.getOutput();
-            int yPos                                    = getYPos();
-            boolean UpsideDown                          = isUpsideDown();
-            ResourceLocation biome                      = getBiome();
-            ResourceLocation dimension                  = getDimension();
-            ResourceLocation block                      = getBelowBlock();
-
-            if(yPos < conditions.getYMin() && conditions.getYMin() != -255) Success = false;
-            if(yPos > conditions.getYMax() && conditions.getYMax() != -255) Success = false;
-
-            if(conditions.getDirection() == FluidExtractionRecipe.Direction.NORMAL && UpsideDown) Success = false;
-            if(conditions.getDirection() == FluidExtractionRecipe.Direction.UPSIDE_DOWN && !UpsideDown) Success = false;
-
-            if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(dimension)) Success = false;
-            if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(biome)) Success = false;
-
-            if(conditions.getBlock() != null && !conditions.getBlock().equals(block)) Success = false;
-
-            if(Success) return output;
+        for(int i = 0; i < _AllRecipes.size(); i++){
+            FluidExtractionRecipe recipe    = _AllRecipes.get(i);
+            if(checkConditions(recipe.getCondition())) _Recipes.add(recipe);
         };
-        return new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0, 0);
+
+        if(!_Recipes.isEmpty()) OUTPUT = _Recipes.get(0).getOutput();
+        return OUTPUT;
+    }
+
+    private boolean checkConditions(FluidExtractionRecipe.Condition conditions) {
+        boolean Success = true;
+
+        if(getYPos() < conditions.getYMin() && conditions.getYMin() != -255) Success = false;
+        if(getYPos() > conditions.getYMax() && conditions.getYMax() != -255) Success = false;
+
+        if(conditions.getDirection() == FluidExtractionRecipe.Direction.NORMAL && isUpsideDown()) Success = false;
+        if(conditions.getDirection() == FluidExtractionRecipe.Direction.UPSIDE_DOWN && !isUpsideDown()) Success = false;
+
+        if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(getDimension())) Success = false;
+        if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(getBiome())) Success = false;
+
+        if(!conditions.isBlockTag() && conditions.getBlock() != null && !conditions.getBlock().equals(getBelowBlock())) Success = false;
+
+        if(conditions.isBlockTag() && conditions.getBlock() != null){
+            List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, conditions.getBlock())).stream().toList();
+            Block block = ForgeRegistries.BLOCKS.getValue(getBelowBlock());
+
+            if(!blocks.contains(block)) Success = false;
+        }
+
+        return Success;
     }
 
 

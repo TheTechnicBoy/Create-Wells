@@ -12,9 +12,10 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +32,6 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
     }
     public FluidOutput getOutput() {
         return output;
-    }
-    public ResourceLocation getID() {
-        return id;
     }
 
     private FluidExtractionRecipe(ResourceLocation id, FluidOutput output, Condition condition) {
@@ -58,6 +56,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             for (ResourceLocation biome : condition.biome) System.out.println("          " + biome.toString());
             System.out.println("[CW Recipes]     DIMENSIONS:");
             for (ResourceLocation dimension : condition.dimension) System.out.println("          " + dimension.toString());
+            System.out.println("[CW Recipes]     Block: " + (condition.BlockTag ? "#" : "") + condition.block);
             System.out.println("---------------");
         }
     }
@@ -114,6 +113,16 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         if(condition.direction == Direction.ERROR){
             CreateWells.LOGGER.error("Something is Wrong with the Direction in the condition of recipe: " + resourceLocation);
             return null;
+        }
+
+        //if(condition.BlockTag && condition.block != null){
+        //    List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, condition.getBlock())).stream().toList();
+        //    if(blocks.isEmpty()) return null;
+        //}
+
+        if(!condition.BlockTag && condition.block != null){
+            Block block = ForgeRegistries.BLOCKS.getValue(condition.getBlock());
+            if(block.equals(Blocks.AIR)) return null;
         }
 
         return new FluidExtractionRecipe(resourceLocation, output, condition);
@@ -175,6 +184,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final int yMin;
         private final int yMax;
         private final ResourceLocation block;
+        private final boolean BlockTag;
 
         public Direction getDirection() {
             return direction;
@@ -195,13 +205,18 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             return block;
         }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block) {
+        public boolean isBlockTag() {
+            return BlockTag;
+        }
+
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag) {
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
             this.yMin = yMin;
             this.yMax = yMax;
             this.block = block;
+            this.BlockTag = BlockTag;
         }
 
         public static Condition fromJSON(JsonObject jsonObject) {
@@ -211,6 +226,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMin = -255;
             int yMax = -255;
             ResourceLocation block = null;
+            boolean blockTag = false;
 
             try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ex) {}
             Direction direction;
@@ -234,12 +250,16 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
                 }
             } catch (Exception ex) {}
 
-            try{ block = new ResourceLocation(jsonObject.get("block").getAsString()); } catch (Exception ex) {}
+            try{
+                blockTag = jsonObject.get("block").getAsString().startsWith("#");
+                if(blockTag) block = new ResourceLocation(jsonObject.get("block").getAsString().split("#")[1]);
+                else block = new ResourceLocation(jsonObject.get("block").getAsString());
+            } catch (Exception ex) {}
 
             try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ex) {}
             try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ex) {}
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag);
         }
 
         public static Condition fromPacket(FriendlyByteBuf buf) {
@@ -266,8 +286,9 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMax = buf.readInt();
 
             ResourceLocation block = buf.readResourceLocation();
+            boolean blockTag = buf.readBoolean();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -289,6 +310,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             buf.writeInt(this.yMax);
 
             buf.writeResourceLocation(this.block);
+            buf.writeBoolean(this.BlockTag);
         }
     }
 

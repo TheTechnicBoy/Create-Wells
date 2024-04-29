@@ -105,7 +105,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             return null;
         }
 
-        if(condition.yMin > condition.yMax && condition.yMin > -255 && condition.yMax > -255){
+        if((condition.yMin > condition.yMax && condition.yMin > -255 && condition.yMax > -255) || (condition.yMin > 511 || condition.yMax > 511)){
             CreateWells.LOGGER.error("Something is Wrong with the yMin and yMax in the condition of recipe: " + resourceLocation);
             return null;
         }

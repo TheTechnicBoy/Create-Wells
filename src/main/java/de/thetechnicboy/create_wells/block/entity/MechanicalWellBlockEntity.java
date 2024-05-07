@@ -1,9 +1,15 @@
 package de.thetechnicboy.create_wells.block.entity;
 
+import com.simibubi.create.content.kinetics.base.KineticBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -15,6 +21,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.FluidHandlerBlockEntity;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -23,41 +32,84 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
+public class MechanicalWellBlockEntity extends KineticBlockEntity {
 
-    public int tankCapacity = 4000;
-    public int delayUntilNextBucket = 0;
-    public int fillTick = 0;
-    public boolean initialized;
+    public static int tankCapacity = 4000;
+    private int fillTick = 0;
+    private boolean initialized;
+    private SmartFluidTankBehaviour tank;
+
 
     public MechanicalWellBlockEntity(BlockPos pos, BlockState state){
         super(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), pos, state);
-        tank = new WellFluidTank(this, tankCapacity);
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, MechanicalWellBlockEntity be){
-        if(be.fillTick > 0){
-            be.fillTick--;
-            be.setChanged();
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side){
+        if(cap == ForgeCapabilities.FLUID_HANDLER && side != Direction.DOWN && side != Direction.UP) return tank.getCapability().cast();
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap){
+        if(cap == ForgeCapabilities.FLUID_HANDLER) return tank.getCapability().cast();
+        return super.getCapability(cap);
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviour){
+        tank = SmartFluidTankBehaviour.single(this, tankCapacity);
+        tank.getPrimaryHandler().setValidator(fluid -> {return true;});
+        behaviour.add(tank);
+        super.addBehaviours(behaviour);
+    }
+
+    @Override
+    public void read(CompoundTag compoundTag, boolean clientPacket){
+        super.read(compoundTag, clientPacket);
+        tank.read(compoundTag, clientPacket);
+    }
+    @Override
+    public void write(CompoundTag compoundTag, boolean clientPacket){
+        super.write(compoundTag, clientPacket);
+        tank.write(compoundTag, clientPacket);
+    }
+    @Override
+    public void tick(){
+        //if(getSpeed() < 64) return;
+
+        if(this.fillTick > 0){
+            this.fillTick--;
+            this.setChanged();
         }
 
-        if(be.fillTick <= 0){
-            FluidExtractionRecipe.FluidOutput fluidToFill = be.getFluidToFill();
-            be.tank.fill(new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount()), IFluidHandler.FluidAction.EXECUTE);
-            be.fillTick = fluidToFill.getSpeed();
+        if(this.fillTick <= 0){
+            FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
+
+            this.fillTick = fluidToFill.getSpeed();
+
+            FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
+            FluidStack newFluid = new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount() + oldFluid.getAmount());
+
+            if(!oldFluid.isEmpty() && oldFluid.getFluid() != newFluid.getFluid()) return;
+            if(oldFluid.getAmount() >= tankCapacity) return;
+
+            if(fluidToFill.getAmount() + oldFluid.getAmount() > tankCapacity) this.tank.getPrimaryHandler().setFluid(new FluidStack(fluidToFill.getFluid(), tankCapacity));
+            else this.tank.getPrimaryHandler().setFluid(newFluid);
+
+            this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         }
     }
+
+
     @Override
     public void onLoad(){
         if(!initialized){
             initialized = true;
             if(!level.isClientSide){
                 fillTick = getFluidToFill().getSpeed();
-            }
-        }
 
-        if(((WellFluidTank) tank).updateLight(tank.getFluid())){
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            }
         }
     }
 
@@ -111,91 +163,33 @@ public class MechanicalWellBlockEntity extends FluidHandlerBlockEntity {
     public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).get()); }
     public int getYPos(){ return this.getBlockPos().getY() ;}
     public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
-
-    public ResourceLocation getBelowBlock()
-    {
+    public ResourceLocation getBelowBlock() {
         BlockPos otherPos = this.getBlockPos().below(isUpsideDown() ? -1 : 1);
         Block block = level.getBlockState(otherPos).getBlock();
         return this.getLevel().registryAccess().registryOrThrow(Registries.BLOCK).getKey(block);
     }
 
+    public SmartFluidTankBehaviour getTank(){return tank;}
 
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithoutMetadata();
     }
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        fillTick = tag.getInt("FillTick");
-        initialized = tag.getBoolean("Initialized");
-    }
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.putInt("FillTick", fillTick);
-        tag.putBoolean("Initialized", initialized);
-    }
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
+
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        FluidStack oldFluid = tank.getFluid();
+        FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
         handleUpdateTag(pkt.getTag());
-        FluidStack newFluid = tank.getFluid();
+        FluidStack newFluid = tank.getPrimaryHandler().getFluid();
 
-        boolean wasEmpty = newFluid != null && oldFluid == null;
+         boolean wasEmpty = newFluid != null && oldFluid == null;
         boolean wasFull = newFluid == null && oldFluid != null;
 
-        // update renderer and light level if needed
         if (wasEmpty || wasFull || newFluid != null && newFluid.getAmount() != oldFluid.getAmount()) {
-            if (newFluid != null) ((WellFluidTank) tank).updateLight(newFluid);
-            else ((WellFluidTank) tank).updateLight(oldFluid);
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
 
-    public FluidTank getTank() {
-        return tank;
-    }
-    public static class WellFluidTank extends FluidTank{
-        private MechanicalWellBlockEntity well;
-        public WellFluidTank(MechanicalWellBlockEntity well, int capacity){
-            super(capacity);
-            this.well = well;
-            setValidator(fluid -> { return true; });
-        }
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            int fill = well.getFluidToFill().getFluid() == resource.getFluid() ? super.fill(resource, action) : 0;
-            if(action.execute() && fill > 0 ){
-                BlockState state = well.getBlockState();
-                well.getLevel().sendBlockUpdated(well.getBlockPos(), state, state, Block.UPDATE_ALL);
-                updateLight(resource);
-            }
-            return fill;
-        }
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action){
-            FluidStack rescource = super.drain(maxDrain, action);
-            if(rescource != null && action.execute()){
-                BlockState state = well.getBlockState();
-                well.getLevel().sendBlockUpdated(well.getBlockPos(), state, state, Block.UPDATE_ALL);
-                updateLight(rescource);
-            }
-            return rescource;
-        }
-        protected boolean updateLight(FluidStack resource){
-            if(resource != null){
-                if(resource.getFluid().getFluidType().getLightLevel(resource.getFluid().defaultFluidState(), well.getLevel(), well.getBlockPos()) > 0){
-                    well.getLevel().getLightEngine().checkBlock(well.getBlockPos());
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
+
 }

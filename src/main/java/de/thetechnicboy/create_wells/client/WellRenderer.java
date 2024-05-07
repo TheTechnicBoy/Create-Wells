@@ -23,12 +23,11 @@ public class WellRenderer implements BlockEntityRenderer<MechanicalWellBlockEnti
     public WellRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(MechanicalWellBlockEntity well, float partialTick, PoseStack poseStack,
-                       MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        FluidStack fluid = well.getTank().getFluid();
+    public void render(MechanicalWellBlockEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
         if (!fluid.isEmpty()) {
             int amount = fluid.getAmount();
-            int capacity = well.getTank().getCapacity();
+            int capacity = MechanicalWellBlockEntity.tankCapacity;
             boolean upsideDown = well.isUpsideDown();
 
             Level level = well.getLevel();

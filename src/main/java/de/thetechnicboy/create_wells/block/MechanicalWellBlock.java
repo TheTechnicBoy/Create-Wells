@@ -1,5 +1,9 @@
 package de.thetechnicboy.create_wells.block;
 
+import com.simibubi.create.content.kinetics.base.KineticBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
+import com.simibubi.create.foundation.block.IBE;
 import de.thetechnicboy.create_wells.block.entity.MechanicalWellBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +14,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -24,7 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class MechanicalWellBlock extends BaseEntityBlock {
+public class MechanicalWellBlock extends KineticBlock implements IBE<MechanicalWellBlockEntity>, ICogWheel {
 
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -59,13 +64,18 @@ public class MechanicalWellBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new MechanicalWellBlockEntity(pos, state) : null;
+    public Class<MechanicalWellBlockEntity> getBlockEntityClass() {
+        return MechanicalWellBlockEntity.class;
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), MechanicalWellBlockEntity::serverTick);
+    public BlockEntityType<? extends MechanicalWellBlockEntity> getBlockEntityType() {
+        return ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get();
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new MechanicalWellBlockEntity(pos, state) : null;
     }
 
     @Override
@@ -219,6 +229,16 @@ public class MechanicalWellBlock extends BaseEntityBlock {
     public static float getFluidRenderHeight(int amount, int capacity, boolean upsideDown) {
         float height = amount * 14F / (16 * capacity) + (2F / 16);
         return upsideDown ? 1 - height : height;
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return Direction.Axis.Y;
+    }
+
+    @Override
+    public boolean isLargeCog(){
+        return false;
     }
 }
 

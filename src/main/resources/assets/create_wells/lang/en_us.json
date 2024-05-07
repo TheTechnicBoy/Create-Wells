@@ -1,3 +1,5 @@
 {
-  "block.create_wells.mechanical_well": "Mechanical Well"
+  "block.create_wells.mechanical_well": "Mechanical Well",
+
+  "create_wells.ponder.mechanical_well.header": "Generating Fluids using the Mechanical Well"
 }

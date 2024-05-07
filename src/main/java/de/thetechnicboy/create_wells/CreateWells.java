@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.client.WellRenderer;
 import de.thetechnicboy.create_wells.item.ModItems;
+import de.thetechnicboy.create_wells.ponder.ModPonder;
 import de.thetechnicboy.create_wells.recipe.ModRecipes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -41,6 +42,7 @@ public class CreateWells {
     }
     private void onClientSetup(FMLClientSetupEvent event){
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));
+        event.enqueueWork(ModPonder::register);
     }
 
 }

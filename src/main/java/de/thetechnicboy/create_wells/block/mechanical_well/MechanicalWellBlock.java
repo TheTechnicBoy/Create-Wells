@@ -235,8 +235,7 @@ public class MechanicalWellBlock extends DirectionalAxisKineticBlock implements 
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        //return !(face.getAxis() == state.getValue(AXIS));
-        return true;
+        return !(face.getAxis() == state.getValue(AXIS));
     }
 
 }

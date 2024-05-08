@@ -1,7 +1,7 @@
 package de.thetechnicboy.create_wells.datagen;
 
 import de.thetechnicboy.create_wells.CreateWells;
-import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;

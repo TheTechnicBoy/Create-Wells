@@ -2,8 +2,8 @@ package de.thetechnicboy.create_wells.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
-import de.thetechnicboy.create_wells.block.entity.MechanicalWellBlockEntity;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -18,16 +18,16 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import org.joml.Matrix4f;
 
-public class WellRenderer implements BlockEntityRenderer<MechanicalWellBlockEntity> {
+public class WellRenderer implements BlockEntityRenderer<MechanicalWellEntity> {
 
     public WellRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(MechanicalWellBlockEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(MechanicalWellEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
         if (!fluid.isEmpty()) {
             int amount = fluid.getAmount();
-            int capacity = MechanicalWellBlockEntity.tankCapacity;
+            int capacity = MechanicalWellEntity.tankCapacity;
             boolean upsideDown = well.isUpsideDown();
 
             Level level = well.getLevel();

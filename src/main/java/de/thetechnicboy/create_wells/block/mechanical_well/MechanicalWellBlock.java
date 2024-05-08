@@ -1,10 +1,8 @@
-package de.thetechnicboy.create_wells.block;
+package de.thetechnicboy.create_wells.block.mechanical_well;
 
-import com.simibubi.create.content.kinetics.base.KineticBlock;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
+import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
-import de.thetechnicboy.create_wells.block.entity.MechanicalWellBlockEntity;
+import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +15,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -29,7 +26,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class MechanicalWellBlock extends KineticBlock implements IBE<MechanicalWellBlockEntity>, ICogWheel {
+public class MechanicalWellBlock extends DirectionalAxisKineticBlock implements IBE<MechanicalWellEntity> {
 
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -64,18 +61,18 @@ public class MechanicalWellBlock extends KineticBlock implements IBE<MechanicalW
     }
 
     @Override
-    public Class<MechanicalWellBlockEntity> getBlockEntityClass() {
-        return MechanicalWellBlockEntity.class;
+    public Class<MechanicalWellEntity> getBlockEntityClass() {
+        return MechanicalWellEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends MechanicalWellBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends MechanicalWellEntity> getBlockEntityType() {
         return ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get();
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new MechanicalWellBlockEntity(pos, state) : null;
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new MechanicalWellEntity(pos, state) : null;
     }
 
     @Override
@@ -233,13 +230,15 @@ public class MechanicalWellBlock extends KineticBlock implements IBE<MechanicalW
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return Direction.Axis.Y;
+        return state.getValue(AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
     }
 
     @Override
-    public boolean isLargeCog(){
-        return false;
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        //return !(face.getAxis() == state.getValue(AXIS));
+        return true;
     }
+
 }
 
 

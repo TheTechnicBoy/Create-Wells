@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
+import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.client.gui.GuiGraphics;

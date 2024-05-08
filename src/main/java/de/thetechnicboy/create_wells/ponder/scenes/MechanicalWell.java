@@ -25,17 +25,16 @@ public class MechanicalWell {
         scene.idle(5);
 
 
-        //
-
         BlockPos _WellMain = new BlockPos(2,2,2);
         BlockPos _WellSource = new BlockPos(2,1,2);
         BlockPos _WellTop = new BlockPos(2,3,2);
 
-        Block[] SourceBlock = {Blocks.STONE, Blocks.BEDROCK, Blocks.DIRT};
+        Block SourceBlock = Blocks.STONE;
 
         Selection WellMain = util.select.position(_WellMain);
         Selection WellSource = util.select.position(_WellSource);
         Selection WellTop = util.select.position(_WellTop);
+
 
         scene.world.showSection(WellSource, Direction.DOWN);
         scene.idle(10);
@@ -59,30 +58,16 @@ public class MechanicalWell {
 
         scene.idle(20);
 
-        for(Block block: SourceBlock) {
-            scene.overlay.showControls(new InputWindowElement(util.vector.centerOf(_WellSource), Pointing.DOWN).withItem(block.asItem().getDefaultInstance()), 20);
-            scene.world.hideSection(WellSource, Direction.EAST);
-            scene.idle(16);
-            scene.world.setBlock(_WellSource, block.defaultBlockState(), false);
-            scene.world.showSection(WellSource, Direction.EAST);
-            scene.idle(16);
-        }
-
-        scene.idle(20);
-
-        //scene.world.showSection();
-
-
-        Selection[] rotation = {util.select.position(3,1,2), util.select.position(3,2,2), util.select.position(4,1,2), util.select.position(5,1,2), util.select.position(5,0,3) };
-        for(Selection block: rotation){
-            scene.world.showSection(block, Direction.WEST);
-        }
+        scene.overlay.showControls(new InputWindowElement(util.vector.centerOf(_WellSource), Pointing.DOWN).withItem(SourceBlock.asItem().getDefaultInstance()), 20);
+        scene.world.hideSection(WellSource, Direction.EAST);
         scene.idle(16);
-        scene.overlay.showText(60)
-                .colored(PonderPalette.INPUT)
-                .text("The Well needs rotational energy to generate fluids")
-                .pointAt(util.vector.centerOf(4,2,1))
-                .placeNearTarget();
-        scene.idle(60);
+        scene.world.setBlock(_WellSource, SourceBlock.defaultBlockState(), false);
+        scene.world.showSection(WellSource, Direction.EAST);
+        scene.idle(25);
+
+        //TODO: MAYBE MORE BLOCKS
+
+        
+        scene.idle(70);
     }
 }

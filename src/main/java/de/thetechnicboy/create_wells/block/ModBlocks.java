@@ -1,11 +1,7 @@
 package de.thetechnicboy.create_wells.block;
 
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import de.thetechnicboy.create_wells.CreateWells;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellEntity;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellInstance;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellRenderer;
+import de.thetechnicboy.create_wells.block.entity.MechanicalWellBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -13,8 +9,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.simibubi.create.Create.REGISTRATE;
 
 
 public class ModBlocks {
@@ -32,14 +26,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> MECHANICAL_WELL = BLOCKS.register("mechanical_well",
             () -> new MechanicalWellBlock());
 
-    public static final RegistryObject<BlockEntityType<MechanicalWellEntity>> MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("mechanical_well",
-            () -> BlockEntityType.Builder.of(MechanicalWellEntity::new, ModBlocks.MECHANICAL_WELL.get()).build(null));
-
-    public static final BlockEntityEntry<MechanicalWellEntity> _MECHANICAL_WELL_BLOCKENTITY = REGISTRATE
-            .blockEntity("mechanical_well", MechanicalWellEntity::new)
-            .instance(() -> MechanicalWellInstance::new)
-            .validBlocks(ModBlocks.MECHANICAL_WELL)
-            .renderer(() -> MechanicalWellRenderer::new)
-            .register();
+    public static final RegistryObject<BlockEntityType<MechanicalWellBlockEntity>> MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("mechanical_well",
+            () -> BlockEntityType.Builder.of(MechanicalWellBlockEntity::new, ModBlocks.MECHANICAL_WELL.get()).build(null));
 }
 

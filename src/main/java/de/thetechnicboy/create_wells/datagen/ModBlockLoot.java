@@ -1,6 +1,6 @@
 package de.thetechnicboy.create_wells.datagen;
 
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
+import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;

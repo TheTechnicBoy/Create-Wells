@@ -1,8 +1,11 @@
-package de.thetechnicboy.create_wells.block.mechanical_well;
+package de.thetechnicboy.create_wells.block.entity;
 
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import de.thetechnicboy.create_wells.block.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;
@@ -10,20 +13,26 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.FluidHandlerBlockEntity;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MechanicalWellEntity extends KineticBlockEntity {
+public class MechanicalWellBlockEntity extends KineticBlockEntity {
 
     public static int tankCapacity = 4000;
     private int fillTick = 0;
@@ -31,7 +40,7 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     private SmartFluidTankBehaviour tank;
 
 
-    public MechanicalWellEntity(BlockPos pos, BlockState state){
+    public MechanicalWellBlockEntity(BlockPos pos, BlockState state){
         super(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), pos, state);
     }
 
@@ -67,7 +76,7 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     }
     @Override
     public void tick(){
-        if(getSpeed() < 64) return;
+        //if(getSpeed() < 64) return;
 
         if(this.fillTick > 0){
             this.fillTick--;

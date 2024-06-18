@@ -24,7 +24,6 @@ public class MechanicalWell {
 
         scene.idle(5);
 
-
         //
 
         BlockPos _WellMain = new BlockPos(2,2,2);
@@ -70,10 +69,12 @@ public class MechanicalWell {
 
         scene.idle(20);
 
-        //scene.world.showSection();
-
-
-        Selection[] rotation = {util.select.position(3,1,2), util.select.position(3,2,2), util.select.position(4,1,2), util.select.position(5,1,2), util.select.position(5,0,3) };
+        Selection[] rotation = {
+                util.select.position(3,1,2),
+                util.select.position(3,2,2),
+                util.select.position(4,1,2),
+                util.select.position(5,1,2),
+                util.select.position(5,0,3) };
         for(Selection block: rotation){
             scene.world.showSection(block, Direction.WEST);
         }

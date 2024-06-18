@@ -57,6 +57,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             System.out.println("[CW Recipes]     DIMENSIONS:");
             for (ResourceLocation dimension : condition.dimension) System.out.println("          " + dimension.toString());
             System.out.println("[CW Recipes]     Block: " + (condition.BlockTag ? "#" : "") + condition.block);
+            System.out.println("[CW Recipes]     RPM: " + condition.rpm);
             System.out.println("---------------");
         }
     }
@@ -115,14 +116,14 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             return null;
         }
 
-        //if(condition.BlockTag && condition.block != null){
-        //    List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, condition.getBlock())).stream().toList();
-        //    if(blocks.isEmpty()) return null;
-        //}
-
         if(!condition.BlockTag && condition.block != null){
             Block block = ForgeRegistries.BLOCKS.getValue(condition.getBlock());
             if(block.equals(Blocks.AIR)) return null;
+        }
+
+        if(condition.yMin > -255 && condition.yMin < 0){
+            CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of recipe: " + resourceLocation);
+            return null;
         }
 
         return new FluidExtractionRecipe(resourceLocation, output, condition);
@@ -185,6 +186,8 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final int yMax;
         private final ResourceLocation block;
         private final boolean BlockTag;
+        private final int rpm;
+
 
         public Direction getDirection() {
             return direction;
@@ -204,12 +207,14 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         public ResourceLocation getBlock() {
             return block;
         }
-
         public boolean isBlockTag() {
             return BlockTag;
         }
+        public int getRPM() {
+            return rpm;
+        }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag) {
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag, int rpm) {
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
@@ -217,6 +222,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             this.yMax = yMax;
             this.block = block;
             this.BlockTag = BlockTag;
+            this.rpm = rpm;
         }
 
         public static Condition fromJSON(JsonObject jsonObject) {
@@ -227,6 +233,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMax = -255;
             ResourceLocation block = null;
             boolean blockTag = false;
+            int rpm = -255;
 
             try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ex) {}
             Direction direction;
@@ -259,7 +266,9 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ex) {}
             try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ex) {}
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag);
+            try{ rpm = jsonObject.get("rpm").getAsInt(); } catch (Exception ex) {}
+
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, rpm);
         }
 
         public static Condition fromPacket(FriendlyByteBuf buf) {
@@ -271,7 +280,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             else direction = Direction.NORMAL;
 
             int biomesSize = buf.readInt();
-            List<ResourceLocation>biomes = new ArrayList<>();
+            List<ResourceLocation> biomes = new ArrayList<>();
             for (int i = 0; i < biomesSize; i++) {
                 biomes.add(buf.readResourceLocation());
             }
@@ -288,7 +297,9 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             ResourceLocation block = buf.readResourceLocation();
             boolean blockTag = buf.readBoolean();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag);
+            int rpm = buf.readInt();
+
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, rpm);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -311,6 +322,8 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             buf.writeResourceLocation(this.block);
             buf.writeBoolean(this.BlockTag);
+
+            buf.writeInt(this.rpm);
         }
     }
 

@@ -6,10 +6,10 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 - **Custom Recipes**: Create your own recipes for wells using datapacks.
 - **Biome/Dimension-specific Fluids**: Depending on the biome or dimension where the well is placed, it can generate different types of fluids.
 - **Upside-down Placement**: Build wells in unconventional orientations, maybe yo need this in some recipes.
-- **(SOON) Integration with Create Mod**: The wells will require mechanical energy from the [Create Mod](https://github.com/Creators-of-Create/Create) for operation.
-- **(SOON) Integration with JEI**: The recipes of the wells will be also displayed in the [JEI](https://github.com/mezz/JustEnoughItems) menu
+- **Integration with Create Mod**: The wells will require mechanical energy from the [Create Mod](https://github.com/Creators-of-Create/Create) for operation.
+- **Integration with JEI**: The recipes of the wells will be also displayed in the [JEI](https://github.com/mezz/JustEnoughItems) menu
 - **(SOON) Energy Well**: A well powered by FE.
-- **(SOON) Block Condition**: Depending on the block it is located on, it will generate other fluids.
+- **Block Condition**: Depending on the block it is located on, it will generate other fluids.
 
 ## Adding Cutom Recepies
 ### Basic Layout
@@ -59,12 +59,19 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 
     //The Speed (in ticks)  
     //Acceptable Value: speed > 0
-    "speed": 20
+    "speed": 20,
+
+    //The Block which the Wells should stand on
+    // tags are also supported -> #forge:stones
+    "block": "minecraft:dirt",
+  
+    //The Minimum Spped of the Create Network
+    "rpm": 128
 }
 ```
 
 ### Examples
-This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition it has to be placed on exactly Y-height 64, but the direction is not important.
+This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition, it has to be placed on exactly Y-height 64, but the direction is not important. It must be placed on a dirt block and the input speed should be at least 64 rpm
 ```json
 {
     "type": "create_wells:fluid_extraction",
@@ -73,7 +80,9 @@ This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biom
         "biome": [ "minecraft:plains" ],
         "dimension": [ "minecraft:overworld" ],
         "yMin": 64,
-        "yMax": 64
+        "yMax": 64,
+        "block": "minecraft:dirt",
+        "rpm": 64
     },
     "output": {
         "fluid": "minecraft:water",

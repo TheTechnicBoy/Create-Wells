@@ -6,7 +6,8 @@
         "dimension": ["minecraft:overworld"],
         "yMin": 64,
         "yMax": 64,
-        "block": "minecraft:stone"
+        "block": "minecraft:stone",
+        "rpm": 64
     },
     "output": {
         "fluid": "minecraft:water",

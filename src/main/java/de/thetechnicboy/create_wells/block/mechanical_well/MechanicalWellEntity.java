@@ -67,7 +67,6 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     }
     @Override
     public void tick(){
-        if(getSpeed() < 64) return;
 
         if(this.fillTick > 0){
             this.fillTick--;
@@ -143,6 +142,8 @@ public class MechanicalWellEntity extends KineticBlockEntity {
 
             if(!blocks.contains(block)) Success = false;
         }
+
+        if(Math.abs(getSpeed()) < conditions.getRPM() && conditions.getRPM() != -255) Success = false;
 
         return Success;
     }

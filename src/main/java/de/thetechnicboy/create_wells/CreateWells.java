@@ -1,13 +1,13 @@
 package de.thetechnicboy.create_wells;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.AllCreativeModeTabs;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.client.WellRenderer;
 import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.ponder.ModPonder;
 import de.thetechnicboy.create_wells.recipe.ModRecipes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -38,7 +38,7 @@ public class CreateWells {
     }
 
     private void buildContents(BuildCreativeModeTabContentsEvent event){
-        if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(ModItems.MECHANICAL_WELL);
+        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.MECHANICAL_WELL);
     }
     private void onClientSetup(FMLClientSetupEvent event){
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));

@@ -121,7 +121,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             if(block.equals(Blocks.AIR)) return null;
         }
 
-        if(condition.yMin > -255 && condition.yMin < 0){
+        if(condition.rpm < 0){
             CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of recipe: " + resourceLocation);
             return null;
         }
@@ -233,7 +233,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMax = -255;
             ResourceLocation block = null;
             boolean blockTag = false;
-            int rpm = -255;
+            int rpm = 0;
 
             try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ex) {}
             Direction direction;

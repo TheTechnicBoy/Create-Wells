@@ -80,16 +80,20 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
 
         String text = (condition.getYMin() == -255? "-∞" : condition.getYMin()) + " -> " + (condition.getYMax() == -255? "+∞" : condition.getYMax());
         int Color = 0x73c7c3;
-        graphics.drawString(Minecraft.getInstance().font , "Height:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 30, Color);
-        graphics.drawString(Minecraft.getInstance().font , "  " + text ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 20, Color);
+        graphics.drawString(Minecraft.getInstance().font , "Height:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 37, Color);
+        graphics.drawString(Minecraft.getInstance().font, "  " + text, getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 27, Color);
 
-        graphics.drawString(Minecraft.getInstance().font , "Dimension:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 10, Color);
-        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2, Color);
-        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2, Color);
+        graphics.drawString(Minecraft.getInstance().font , "Dimension:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 17, Color);
+        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color);
 
-        graphics.drawString(Minecraft.getInstance().font , "Biome:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 10, Color);
-        if(!condition.getBiome().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getBiome().get((int) ((AnimationTickHolder.getRenderTime() + 15) % (condition.getBiome().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 20, Color);
-        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 20, Color);
+        graphics.drawString(Minecraft.getInstance().font , "Biome:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 3, Color);
+        if(!condition.getBiome().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getBiome().get((int) ((AnimationTickHolder.getRenderTime() + 15) % (condition.getBiome().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color);
+
+        graphics.drawString(Minecraft.getInstance().font , "RPM:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 23, Color);
+        if(condition.getRPM() != 0) graphics.drawString(Minecraft.getInstance().font , "  >= " + condition.getRPM() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color);
 
         AnimatedMechanicalWell well;
         if(recipe.getCondition().getBlock() != null) well = new AnimatedMechanicalWell(recipe.getCondition().getDirection(), recipe.getCondition().getBlock(), recipe.getCondition().isBlockTag());

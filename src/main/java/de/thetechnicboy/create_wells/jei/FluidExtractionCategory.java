@@ -65,11 +65,12 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
             }
         }
 
+        int outputAmount = recipe.getOutput().getAmount() / recipe.getOutput().getSpeed() * 20;
         builder
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)
                 .addIngredient(ForgeTypes.FLUID_STACK, withImprovedVisibility(new FluidStack(recipe.getOutput().getFluid(), recipe.getOutput().getAmount())))
-                .addTooltipCallback(addFluidTooltip(recipe.getOutput().getAmount()));
+                .addTooltipCallback(addFluidTooltip(outputAmount <= 0 ? 1 : outputAmount));
     }
 
     @Override

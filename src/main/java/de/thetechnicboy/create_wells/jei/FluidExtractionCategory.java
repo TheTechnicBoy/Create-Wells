@@ -65,7 +65,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
             }
         }
 
-        int outputAmount = recipe.getOutput().getAmount() / recipe.getOutput().getSpeed() * 20;
+        int outputAmount = recipe.getOutput().getAmount() / (recipe.getOutput().getSpeed() / 20); // mb per Second
         builder
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)

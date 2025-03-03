@@ -1,7 +1,5 @@
 package de.thetechnicboy.create_wells.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import de.thetechnicboy.create_wells.CreateWells;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -152,7 +150,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             this.speed = speed;
         }
 
-        public static FluidOutput fromJSON(JsonObject jsonObject){
+        public static FluidOutput fromJSON(com.google.gson.JsonObject jsonObject){
             Fluid fluid = null;
             int amount = 0;
             int speed = 0;
@@ -225,7 +223,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             this.rpm = rpm;
         }
 
-        public static Condition fromJSON(JsonObject jsonObject) {
+        public static Condition fromJSON(com.google.gson.JsonObject jsonObject) {
             String _direction = null;
             List<ResourceLocation> dimensions = new ArrayList<>();
             List<ResourceLocation> biomes = new ArrayList<>();
@@ -244,14 +242,14 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             else direction = Direction.ERROR;
 
             try{
-                JsonArray biomesArray = jsonObject.getAsJsonArray("biome");
+                com.google.gson.JsonArray biomesArray = jsonObject.getAsJsonArray("biome");
                 for (int i = 0; i < biomesArray.size(); i++) {
                     biomes.add(new ResourceLocation(biomesArray.get(i).getAsString()));
                 }
             } catch (Exception ex) {}
 
             try{
-                JsonArray dimensionArray = jsonObject.getAsJsonArray("dimension");
+                com.google.gson.JsonArray dimensionArray = jsonObject.getAsJsonArray("dimension");
                 for (int i = 0; i < dimensionArray.size(); i++) {
                     dimensions.add(new ResourceLocation(dimensionArray.get(i).getAsString()));
                 }

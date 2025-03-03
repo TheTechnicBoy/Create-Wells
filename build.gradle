@@ -109,6 +109,16 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+
+    maven {
+        name = "Create, Ponder, Flywheel"
+        url = "https://maven.createmod.net"
+    }
+
+    maven {
+        name = "ForgeConfigAPI"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
 }
 
 dependencies {
@@ -116,12 +126,17 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}") { transitive = false }
+    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")
+
     implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")

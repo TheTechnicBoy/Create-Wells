@@ -3,7 +3,6 @@ package de.thetechnicboy.create_wells.jei;
 import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.jei.animations.AnimatedMechanicalWell;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
@@ -70,7 +70,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)
                 .addIngredient(ForgeTypes.FLUID_STACK, withImprovedVisibility(new FluidStack(recipe.getOutput().getFluid(), recipe.getOutput().getAmount())))
-                .addTooltipCallback(addFluidTooltip(outputAmount <= 0 ? 1 : outputAmount));
+                .addRichTooltipCallback(addFluidTooltip(outputAmount <= 0 ? 1 : outputAmount));
     }
 
     @Override

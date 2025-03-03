@@ -1,15 +1,14 @@
 package de.thetechnicboy.create_wells.recipe;
 
-import com.google.gson.JsonObject;
+
 import de.thetechnicboy.create_wells.CreateWells;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Nullable;
 
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {
     @Override
-    public FluidExtractionRecipe fromJson(ResourceLocation resourceLocation, JsonObject jsonObject) {
+    public FluidExtractionRecipe fromJson(ResourceLocation resourceLocation, com.google.gson.JsonObject jsonObject) {
         FluidExtractionRecipe.FluidOutput output = FluidExtractionRecipe.FluidOutput.fromJSON(jsonObject.getAsJsonObject("output"));
         FluidExtractionRecipe.Condition condition = FluidExtractionRecipe.Condition.fromJSON(jsonObject.getAsJsonObject("condition"));
         CreateWells.LOGGER.info("FluidExtractionRecipe -  FromJson");
@@ -17,7 +16,7 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
     }
 
     @Override
-    public @Nullable FluidExtractionRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
+    public FluidExtractionRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
         FluidExtractionRecipe.FluidOutput output = FluidExtractionRecipe.FluidOutput.fromPacket(friendlyByteBuf);
         FluidExtractionRecipe.Condition condition = FluidExtractionRecipe.Condition.fromPacket(friendlyByteBuf);
         CreateWells.LOGGER.info("FluidExtractionRecipe - FromNetwork");

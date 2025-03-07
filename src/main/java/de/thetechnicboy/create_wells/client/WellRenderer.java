@@ -2,15 +2,21 @@ package de.thetechnicboy.create_wells.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.ShaftRenderer;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellEntity;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -18,12 +24,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import org.joml.Matrix4f;
 
-public class WellRenderer implements BlockEntityRenderer<MechanicalWellEntity> {
+public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
 
-    public WellRenderer(BlockEntityRendererProvider.Context context) {}
+    public WellRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
 
     @Override
-    public void render(MechanicalWellEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void renderSafe(MechanicalWellEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
         if (!fluid.isEmpty()) {
             int amount = fluid.getAmount();
@@ -65,6 +73,28 @@ public class WellRenderer implements BlockEntityRenderer<MechanicalWellEntity> {
             }
 
         }
+
+
+        VertexConsumer vb = bufferSource.getBuffer(RenderType.solid());
+
+        int packedLightmapCoords = LevelRenderer.getLightColor(well.getLevel(), well.getBlockPos());
+
+        SuperByteBuffer shaft = CachedBuffers.partial(AllPartialModels.SHAFT, well.getBlockState());
+        Direction.Axis axis = getRotationAxisOf(well);
+
+        shaft
+                .rotateCentered(axis == Direction.Axis.Z ? 0 : 90*(float)Math.PI/180f, Direction.NORTH)
+                .rotateCentered(axis == Direction.Axis.X ? 0 : 90*(float)Math.PI/180f, Direction.EAST)
+                .translate(0, 0, 0)
+                .rotateCentered(getAngleForBe(well, well.getBlockPos(), axis), Direction.UP)
+                .light(packedLightmapCoords)
+                .renderInto(poseStack, vb);
+
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(MechanicalWellEntity be) {
+        return true;
     }
 
 }

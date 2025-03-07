@@ -9,6 +9,7 @@ import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -65,6 +66,11 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
                     .atLocal(-1.5, _Direction != FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.20 : 2.20, 0)
                     .scale(23)
                     .render(graphics);
+            blockElement(shaft(Direction.Axis.Z))
+                    .atLocal(-1.5, 1.20, 0)
+                    .rotateBlock(0,0,getCurrentAngle())
+                    .scale(23)
+                    .render(graphics);
         } else {
             blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
@@ -72,6 +78,11 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
                     .render(graphics);
             blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, _Direction != FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
+                    .scale(23)
+                    .render(graphics);
+            blockElement(shaft(Direction.Axis.Z))
+                    .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
+                    .rotateBlock(0,0,getCurrentAngle())
                     .scale(23)
                     .render(graphics);
         }

@@ -4,8 +4,6 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"4": "create:block/gearbox",
-		"5": "create:block/axis",
-		"6": "create:block/axis_top",
 		"base": "create_wells:block/well",
 		"rope": "entity/lead_knot"
 	},
@@ -183,20 +181,6 @@
 				"up": {"uv": [0, 0, 1, 4], "rotation": 270, "texture": "#missing"},
 				"down": {"uv": [0, 0, 1, 4], "rotation": 90, "texture": "#missing"}
 			}
-		},
-		{
-			"name": "Axis",
-			"from": [6, 6, 0],
-			"to": [10, 10, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [6, 6, 10, 10], "rotation": 90, "texture": "#6"},
-				"east": {"uv": [6, 0, 10, 16], "rotation": 270, "texture": "#5"},
-				"south": {"uv": [6, 6, 10, 10], "rotation": 90, "texture": "#6"},
-				"west": {"uv": [6, 0, 10, 16], "rotation": 90, "texture": "#5"},
-				"up": {"uv": [6, 0, 10, 16], "rotation": 180, "texture": "#5"},
-				"down": {"uv": [6, 0, 10, 16], "texture": "#5"}
-			}
 		}
 	],
 	"display": {
@@ -255,8 +239,7 @@
 					"origin": [8, 8, 8],
 					"color": 0,
 					"children": [9, 10, 11, 12, 13]
-				},
-				14
+				}
 			]
 		}
 	]

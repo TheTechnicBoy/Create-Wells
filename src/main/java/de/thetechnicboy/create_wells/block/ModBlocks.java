@@ -13,8 +13,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import static com.simibubi.create.Create.REGISTRATE;
-
 
 public class ModBlocks {
 

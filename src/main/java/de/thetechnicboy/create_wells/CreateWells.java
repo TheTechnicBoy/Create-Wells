@@ -7,6 +7,7 @@ import de.thetechnicboy.create_wells.client.WellRenderer;
 import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.ponder.ModPonder;
 import de.thetechnicboy.create_wells.recipe.ModRecipes;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,7 +43,7 @@ public class CreateWells {
     }
     private void onClientSetup(FMLClientSetupEvent event){
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));
-        event.enqueueWork(ModPonder::register);
+        PonderIndex.addPlugin(new ModPonder());
     }
 
 }

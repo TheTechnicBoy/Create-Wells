@@ -1,20 +1,36 @@
 package de.thetechnicboy.create_wells.ponder;
 
-import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
-import com.simibubi.create.foundation.ponder.PonderRegistry;
-import com.simibubi.create.infrastructure.ponder.AllPonderTags;
+
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.ponder.scenes.MechanicalWell;
+import net.createmod.ponder.api.registration.PonderPlugin;
+import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.minecraft.resources.ResourceLocation;
 
-public class ModPonder {
-    static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(CreateWells.MODID);
+public class ModPonder implements PonderPlugin {
 
-    public static void register(){
-        HELPER.addStoryBoard(ModItems.MECHANICAL_WELL.getId(), "mechanical_well", MechanicalWell::ponder, AllPonderTags.KINETIC_APPLIANCES);
+    @Override
+    public String getModId() { return CreateWells.MODID;}
 
-        PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_APPLIANCES)
-                .add(ModBlocks.MECHANICAL_WELL.get());
+    public static final ResourceLocation WELL = new ResourceLocation(CreateWells.MODID, "mechanical_well");
+
+    @Override
+    public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper){
+        helper.forComponents(ModBlocks.MECHANICAL_WELL.getId())
+                .addStoryBoard("mechanical_well", MechanicalWell::ponder, WELL);
+    }
+
+    @Override
+    public void registerTags(PonderTagRegistrationHelper<ResourceLocation> helper){
+        helper.registerTag(WELL)
+                .addToIndex()
+                .item(ModBlocks.MECHANICAL_WELL.get(), true, true)
+                .title("Create Wells")
+                .description("Wells using Create Kinetics")
+                .register();
+
     }
 }

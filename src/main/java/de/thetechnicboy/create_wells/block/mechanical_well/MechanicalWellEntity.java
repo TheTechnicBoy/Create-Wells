@@ -67,8 +67,9 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     @Override
     public void tick(){
 
-        FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
+        super.tick();
 
+        FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
 
         FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
         FluidStack newFluid = new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount() + oldFluid.getAmount());
@@ -81,7 +82,6 @@ public class MechanicalWellEntity extends KineticBlockEntity {
 
         this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         this.setChanged();
-
     }
 
 

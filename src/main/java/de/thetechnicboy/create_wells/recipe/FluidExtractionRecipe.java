@@ -43,8 +43,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             System.out.println("[CW Recipes] FLUID:");
             System.out.println("[CW Recipes]    " + output.fluid);
-            System.out.println("[CW Recipes]    " + output.amount + " mb");
-            System.out.println("[CW Recipes]    " + output.speed + " tick(s)");
+            System.out.println("[CW Recipes]    " + output.amount + " mb/tick");
 
             System.out.println("[CW Recipes] CONDITION:");
             System.out.println("[CW Recipes]     DIRECTION: " + condition.direction);
@@ -99,7 +98,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
 
     public static FluidExtractionRecipe registerRecipe(ResourceLocation resourceLocation, FluidOutput output, Condition condition){
-        if(output.speed <= 0|| output.amount <= 0 || output.fluid == null){
+        if(output.amount <= 0 || output.fluid == null){
             CreateWells.LOGGER.error("Something is Wrong with the FLuid Output (speed|amount|fluid) of recipe: " + resourceLocation);
             return null;
         }
@@ -132,7 +131,6 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
     public static class FluidOutput{
         private final Fluid fluid;
         private final int amount;
-        private final int speed;
 
         public int getAmount() {
             return amount;
@@ -140,39 +138,31 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         public Fluid getFluid() {
             return fluid;
         }
-        public int getSpeed(){
-            return speed;
-        }
 
-        public FluidOutput(Fluid fluid, int amount, int speed) {
+        public FluidOutput(Fluid fluid, int amount) {
             this.fluid = fluid;
             this.amount = amount;
-            this.speed = speed;
         }
 
         public static FluidOutput fromJSON(com.google.gson.JsonObject jsonObject){
             Fluid fluid = null;
             int amount = 0;
-            int speed = 0;
 
             try { fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(jsonObject.get("fluid").getAsString())); } catch (Exception ex) {};
             try { amount = jsonObject.get("amount").getAsInt(); } catch (Exception ex) {};
-            try { speed = jsonObject.get("speed").getAsInt(); } catch (Exception ex) {};
 
-            return new FluidOutput(fluid, amount, speed);
+            return new FluidOutput(fluid, amount);
         }
 
         public static FluidOutput fromPacket(FriendlyByteBuf buf) {
             Fluid fluid = ForgeRegistries.FLUIDS.getValue(buf.readResourceLocation());
             int amount = buf.readInt();
-            int speed = buf.readInt();
-            return new FluidOutput(fluid, amount, speed);
+            return new FluidOutput(fluid, amount);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
             buf.writeResourceLocation(ForgeRegistries.FLUIDS.getKey(this.fluid));
             buf.writeInt(this.amount);
-            buf.writeInt(this.speed);
         }
     }
 

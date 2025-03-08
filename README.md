@@ -42,7 +42,14 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
     //The Bounds between where the Well has to be placed
     //Default Value: -255 - No Upper/Lower Bound
     "yMin": 64,
-    "yMax": 64
+    "yMax": 64,
+  
+    //The Block which the Wells should stand on
+    // tags are also supported -> #forge:stones
+    "block": "minecraft:dirt",
+
+    //The Minimum Spped of the Create Network
+    "rpm": 128
 }
 ```
 
@@ -53,20 +60,9 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
     //Acceptable Value: Resource Location of a Minecraft or Modded FLuid
     "fluid": "minecraft:water",
 
-    //The Amount (in mB) which will be generated
+    //The Amount (in mB/tick) which will be generated
     //Acceptable Value: amont > 0
-    "amount": 1,
-
-    //The Speed (in ticks)  
-    //Acceptable Value: speed > 0
-    "speed": 20,
-
-    //The Block which the Wells should stand on
-    // tags are also supported -> #forge:stones
-    "block": "minecraft:dirt",
-  
-    //The Minimum Spped of the Create Network
-    "rpm": 128
+    "amount": 1
 }
 ```
 
@@ -86,8 +82,7 @@ This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biom
     },
     "output": {
         "fluid": "minecraft:water",
-        "amount": 1,
-        "speed": 20
+        "amount": 1
     }
 }
 ```
@@ -106,8 +101,7 @@ event.custom({
     },
     "output": {
         "fluid": "minecraft:lava",
-        "amount": 100,
-        "speed": 20
+        "amount": 100
     }
 });
 ```

@@ -26,7 +26,6 @@ import java.util.List;
 public class MechanicalWellEntity extends KineticBlockEntity {
 
     public static int tankCapacity = 4000;
-    private int fillTick = 0;
     private boolean initialized;
     private SmartFluidTankBehaviour tank;
 
@@ -68,27 +67,21 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     @Override
     public void tick(){
 
-        if(this.fillTick > 0){
-            this.fillTick--;
-            this.setChanged();
-        }
+        FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
 
-        if(this.fillTick <= 0){
-            FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
 
-            this.fillTick = fluidToFill.getSpeed();
+        FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
+        FluidStack newFluid = new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount() + oldFluid.getAmount());
 
-            FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
-            FluidStack newFluid = new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount() + oldFluid.getAmount());
+        if(!oldFluid.isEmpty() && oldFluid.getFluid() != newFluid.getFluid()) return;
+        if(oldFluid.getAmount() >= tankCapacity) return;
 
-            if(!oldFluid.isEmpty() && oldFluid.getFluid() != newFluid.getFluid()) return;
-            if(oldFluid.getAmount() >= tankCapacity) return;
+        if(fluidToFill.getAmount() + oldFluid.getAmount() > tankCapacity) this.tank.getPrimaryHandler().setFluid(new FluidStack(fluidToFill.getFluid(), tankCapacity));
+        else this.tank.getPrimaryHandler().setFluid(newFluid);
 
-            if(fluidToFill.getAmount() + oldFluid.getAmount() > tankCapacity) this.tank.getPrimaryHandler().setFluid(new FluidStack(fluidToFill.getFluid(), tankCapacity));
-            else this.tank.getPrimaryHandler().setFluid(newFluid);
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        this.setChanged();
 
-            this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
-        }
     }
 
 
@@ -96,10 +89,6 @@ public class MechanicalWellEntity extends KineticBlockEntity {
     public void onLoad(){
         if(!initialized){
             initialized = true;
-            if(!level.isClientSide){
-                fillTick = getFluidToFill().getSpeed();
-
-            }
         }
     }
 
@@ -107,7 +96,7 @@ public class MechanicalWellEntity extends KineticBlockEntity {
 
         List<FluidExtractionRecipe> _AllRecipes = new ArrayList<>();
         List<FluidExtractionRecipe> _Recipes = new ArrayList<>();
-        FluidExtractionRecipe.FluidOutput OUTPUT = new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0, 0);
+        FluidExtractionRecipe.FluidOutput OUTPUT = new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0);
 
         level.getRecipeManager().getRecipes().forEach(recipe -> {
             if(recipe instanceof FluidExtractionRecipe) _AllRecipes.add( (FluidExtractionRecipe) recipe);

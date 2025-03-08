@@ -9,7 +9,10 @@ import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -19,8 +22,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -32,6 +38,7 @@ import com.simibubi.create.compat.jei.category.BasinCategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractionRecipe> {
 
@@ -65,12 +72,17 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
             }
         }
 
-        int outputAmount = recipe.getOutput().getAmount() / (recipe.getOutput().getSpeed() / 20); // mb per Second
+
+        int outputAmount = recipe.getOutput().getAmount(); // mb per tick
+        FluidStack fluidStack = new FluidStack(recipe.getOutput().getFluid(), (int) outputAmount);
         builder
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)
-                .addIngredient(ForgeTypes.FLUID_STACK, withImprovedVisibility(new FluidStack(recipe.getOutput().getFluid(), recipe.getOutput().getAmount())))
-                .addRichTooltipCallback(addFluidTooltip(outputAmount <= 0 ? 1 : outputAmount));
+                .addIngredient(ForgeTypes.FLUID_STACK,  fluidStack)
+                .addRichTooltipCallback((view, tooltip) -> {
+                    if(outputAmount < 1000) tooltip.add(FormattedText.of(outputAmount + "mB/tick"));
+                    if(outputAmount >= 1000) tooltip.add(FormattedText.of(Float.toString(((float)outputAmount)/1000.0f) + "B/tick"));
+                });
     }
 
     @Override
@@ -80,21 +92,21 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
         FluidExtractionRecipe.Condition condition = recipe.getCondition();
 
         String text = (condition.getYMin() == -255? "-∞" : condition.getYMin()) + " -> " + (condition.getYMax() == -255? "+∞" : condition.getYMax());
-        int Color = 0x73c7c3;
-        graphics.drawString(Minecraft.getInstance().font , "Height:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 37, Color);
-        graphics.drawString(Minecraft.getInstance().font, "  " + text, getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 27, Color);
+        int Color = 0x575757;
+        graphics.drawString(Minecraft.getInstance().font , "Height:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 37, Color, false);
+        graphics.drawString(Minecraft.getInstance().font, "  " + text, getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 27, Color, false);
 
-        graphics.drawString(Minecraft.getInstance().font , "Dimension:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 17, Color);
-        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color);
-        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color);
+        graphics.drawString(Minecraft.getInstance().font , "Dimension:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 17, Color, false);
+        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color, false);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color, false);
 
-        graphics.drawString(Minecraft.getInstance().font , "Biome:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 3, Color);
-        if(!condition.getBiome().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getBiome().get((int) ((AnimationTickHolder.getRenderTime() + 15) % (condition.getBiome().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color);
-        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color);
+        graphics.drawString(Minecraft.getInstance().font , "Biome:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 3, Color, false);
+        if(!condition.getBiome().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getBiome().get((int) ((AnimationTickHolder.getRenderTime() + 15) % (condition.getBiome().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color, false);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 13, Color, false);
 
-        graphics.drawString(Minecraft.getInstance().font , "RPM:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 23, Color);
-        if(condition.getRPM() != 0) graphics.drawString(Minecraft.getInstance().font , "  >= " + condition.getRPM() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color);
-        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color);
+        graphics.drawString(Minecraft.getInstance().font , "RPM:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 23, Color, false);
+        if(condition.getRPM() != 0) graphics.drawString(Minecraft.getInstance().font , "  >= " + condition.getRPM() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color, false);
+        else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color, false);
 
         AnimatedMechanicalWell well;
         if(recipe.getCondition().getBlock() != null) well = new AnimatedMechanicalWell(recipe.getCondition().getDirection(), recipe.getCondition().getBlock(), recipe.getCondition().isBlockTag());

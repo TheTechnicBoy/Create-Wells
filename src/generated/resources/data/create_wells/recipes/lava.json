@@ -11,7 +11,6 @@
   },
   "output": {
     "fluid": "minecraft:lava",
-    "amount": 50,
-    "speed": 20
+    "amount": 50
   }
 }

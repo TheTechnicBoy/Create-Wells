@@ -1,9 +1,10 @@
-package de.thetechnicboy.create_wells.block.mechanical_well;
+package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,24 +15,27 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MechanicalWellEntity extends KineticBlockEntity {
+public abstract class MechanicalWellEntity extends KineticBlockEntity {
 
     public static int tankCapacity = 4000;
     private boolean initialized;
     private SmartFluidTankBehaviour tank;
 
 
-    public MechanicalWellEntity(BlockPos pos, BlockState state){
-        super(ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get(), pos, state);
+    public MechanicalWellEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(type, pos, state);
+
     }
 
     @Override

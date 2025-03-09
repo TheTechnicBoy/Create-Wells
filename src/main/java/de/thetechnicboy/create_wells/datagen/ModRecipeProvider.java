@@ -18,7 +18,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.MECHANICAL_WELL.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_MECHANICAL_WELL.get())
                 .pattern("RRR")
                 .pattern("/L/")
                 .pattern("SBS")

@@ -16,6 +16,6 @@ public class ModSpriteSourceProvider extends SpriteSourceProvider {
 
     @Override
     protected void addSources() {
-        atlas(SpriteSourceProvider.BLOCKS_ATLAS).addSource(new SingleFile(new ResourceLocation("minecraft:entity/lead_knot"), Optional.empty()));
+        atlas(SpriteSourceProvider.BLOCKS_ATLAS).addSource(new SingleFile(CreateWells.parseRL("minecraft:entity/lead_knot"), Optional.empty()));
     }
 }

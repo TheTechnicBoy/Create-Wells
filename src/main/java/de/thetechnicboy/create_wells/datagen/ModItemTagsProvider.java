@@ -14,7 +14,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider {
-    public static final TagKey<Item> WELLS = ItemTags.create(new ResourceLocation(CreateWells.MODID, "wells"));
+    public static final TagKey<Item> WELLS = ItemTags.create(CreateWells.genRL("wells"));
 
     public ModItemTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, CreateWells.MODID, existingFileHelper);

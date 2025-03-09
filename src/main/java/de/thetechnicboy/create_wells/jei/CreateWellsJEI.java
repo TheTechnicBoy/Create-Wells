@@ -20,7 +20,7 @@ import java.util.List;
 @JeiPlugin
 public class CreateWellsJEI implements IModPlugin {
 
-    private static final ResourceLocation ID = new ResourceLocation(CreateWells.MODID, "jei_plugin");
+    private static final ResourceLocation ID = CreateWells.genRL("jei_plugin");
     public IIngredientManager ingredientManager;
 
     final List<CreateRecipeCategory<?>> ALL = new ArrayList<>();
@@ -35,8 +35,23 @@ public class CreateWellsJEI implements IModPlugin {
 
         ALL.add(builder(FluidExtractionRecipe.class)
                 .addTypedRecipes(() -> ModRecipes.FLUID_EXTRACTION_TYPE)
-                .catalyst(ModBlocks.MECHANICAL_WELL::get)
-                .itemIcon(ModBlocks.MECHANICAL_WELL.get())
+                .catalyst(ModBlocks.BLACK_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.BLUE_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.BROWN_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.CYAN_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.GRAY_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.GREEN_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.LIME_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.MAGENTA_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.ORANGE_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.PINK_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.PURPLE_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.RED_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.WHITE_MECHANICAL_WELL::get)
+                .catalyst(ModBlocks.YELLOW_MECHANICAL_WELL::get)
+                .itemIcon(ModBlocks.RED_MECHANICAL_WELL.get())
                 .emptyBackground(180, 80)
                 .build("fluid_extraction", FluidExtractionCategory::new)
         );

@@ -20,7 +20,7 @@ import java.util.List;
 
 public class FluidExtractionRecipe implements Recipe<Inventory> {
 
-    private static final boolean DEBUG_MODE_PRINTLN = true;
+    private static final boolean DEBUG_MODE_PRINTLN = false;
     private final ResourceLocation id;
     private final FluidOutput output;
     private final Condition condition;
@@ -148,7 +148,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             Fluid fluid = null;
             int amount = 0;
 
-            try { fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(jsonObject.get("fluid").getAsString())); } catch (Exception ex) {};
+            try { fluid = ForgeRegistries.FLUIDS.getValue(CreateWells.parseRL(jsonObject.get("fluid").getAsString())); } catch (Exception ex) {};
             try { amount = jsonObject.get("amount").getAsInt(); } catch (Exception ex) {};
 
             return new FluidOutput(fluid, amount);
@@ -234,21 +234,21 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             try{
                 com.google.gson.JsonArray biomesArray = jsonObject.getAsJsonArray("biome");
                 for (int i = 0; i < biomesArray.size(); i++) {
-                    biomes.add(new ResourceLocation(biomesArray.get(i).getAsString()));
+                    biomes.add(CreateWells.parseRL(biomesArray.get(i).getAsString()));
                 }
             } catch (Exception ex) {}
 
             try{
                 com.google.gson.JsonArray dimensionArray = jsonObject.getAsJsonArray("dimension");
                 for (int i = 0; i < dimensionArray.size(); i++) {
-                    dimensions.add(new ResourceLocation(dimensionArray.get(i).getAsString()));
+                    dimensions.add(CreateWells.parseRL(dimensionArray.get(i).getAsString()));
                 }
             } catch (Exception ex) {}
 
             try{
                 blockTag = jsonObject.get("block").getAsString().startsWith("#");
-                if(blockTag) block = new ResourceLocation(jsonObject.get("block").getAsString().split("#")[1]);
-                else block = new ResourceLocation(jsonObject.get("block").getAsString());
+                if(blockTag) block = CreateWells.parseRL(jsonObject.get("block").getAsString().split("#")[1]);
+                else block = CreateWells.parseRL(jsonObject.get("block").getAsString());
             } catch (Exception ex) {}
 
             try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ex) {}

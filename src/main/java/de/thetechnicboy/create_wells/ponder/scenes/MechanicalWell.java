@@ -39,13 +39,14 @@ public class MechanicalWell {
         BlockPos _WellSource = new BlockPos(1,1,1);
 
         Block[] SourceBlock = {Blocks.STONE, Blocks.BEDROCK, Blocks.DIRT};
+        Block[] WellBlock = {ModBlocks.WHITE_MECHANICAL_WELL.get(), ModBlocks.GREEN_MECHANICAL_WELL.get(), ModBlocks.PURPLE_MECHANICAL_WELL.get()};
 
         Selection WellTop = util.select().position(_WellTop);
         Selection WellMain = util.select().position(_WellMain);
         Selection WellSource = util.select().position(_WellSource);
 
-        scene.world().setBlock(_WellTop, ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
-        scene.world().setBlock(_WellMain, ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+        scene.world().setBlock(_WellTop, ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+        scene.world().setBlock(_WellMain, ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
 
         scene.world().showSection(WellSource, Direction.DOWN);
         scene.idle(10);
@@ -71,7 +72,7 @@ public class MechanicalWell {
         scene.idle(20);
 
         for(Block block: SourceBlock) {
-            scene.overlay().showControls(util.vector().centerOf(_WellSource), Pointing.UP, 20).withItem(block.asItem().getDefaultInstance());
+            scene.overlay().showControls(util.vector().centerOf(_WellSource), Pointing.UP, 10).withItem(block.asItem().getDefaultInstance());
             scene.world().hideSection(WellSource, Direction.EAST);
             scene.idle(16);
             scene.world().setBlock(_WellSource, block.defaultBlockState(), false);
@@ -97,21 +98,51 @@ public class MechanicalWell {
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(25);
-        scene.world().setKineticSpeed(util.select().everywhere(), 32f);
+        UpdateKinetics(scene, util);
         scene.idle(5);
         scene.effects().rotationSpeedIndicator(util.grid().at(1,2,3));
         scene.idle(60);
 
-        scene.overlay().showText(60)
+        scene.overlay().showText(70)
                 .colored(PonderPalette.INPUT)
                 .text("The fluid can simply be extracted using pipes.")
                 .pointAt(util.vector().centerOf(_WellMain))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(30);
-        scene.world().showSection(util.select().position(2,2,1), Direction.WEST);
         scene.world().showSection(util.select().position(2,1,1), Direction.WEST);
-        //scene.overlay().showControls(util.vector().centerOf(_WellMain.east()), Pointing.RIGHT, 40).withItem(AllBlocks.MECHANICAL_PUMP.get().asItem().getDefaultInstance());
+        scene.idle(20);
+        scene.world().showSection(util.select().position(2,2,1), Direction.WEST);
         scene.idle(40);
+
+
+        scene.overlay().showText(60)
+                .colored(PonderPalette.MEDIUM)
+                .text("For aesthetic reasons, there are different colors of the Mechanical Wells.")
+                .pointAt(util.vector().centerOf(_WellMain).add(0,0.5,0))
+                .placeNearTarget()
+                .attachKeyFrame();
+
+        scene.idle(20);
+
+        for(Block block: WellBlock) {
+            scene.overlay().showControls(util.vector().centerOf(_WellMain).add(1,0.5,0), Pointing.RIGHT, 10).withItem(block.asItem().getDefaultInstance());
+            scene.world().hideSection(WellMain, Direction.EAST);
+            scene.world().hideSection(WellTop, Direction.EAST);
+            scene.idle(20);
+
+            scene.world().setBlock(_WellTop, block.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+            scene.world().setBlock(_WellMain, block.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+
+            scene.world().showSection(WellMain, Direction.EAST);
+            scene.world().showSection(WellTop, Direction.EAST);
+            UpdateKinetics(scene, util);
+            scene.idle(20);
+        }
+    }
+
+    public static void UpdateKinetics(CreateSceneBuilder scene, SceneBuildingUtil util){
+        scene.world().setKineticSpeed(util.select().everywhere(), 32.f);
+        scene.world().setKineticSpeed(util.select().position(1,1,3), -32.f);
     }
 }

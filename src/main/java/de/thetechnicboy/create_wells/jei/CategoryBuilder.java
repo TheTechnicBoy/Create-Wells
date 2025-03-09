@@ -83,7 +83,7 @@ public class CategoryBuilder<T extends Recipe<?>> {
         };
 
         CreateRecipeCategory.Info<T> info = new CreateRecipeCategory.Info<>(
-                new mezz.jei.api.recipe.RecipeType<>(new ResourceLocation(CreateWells.MODID, name), recipeClass),
+                new mezz.jei.api.recipe.RecipeType<>(CreateWells.genRL(name), recipeClass),
                 Component.literal("Fluid Extraction"), background, icon, recipesSupplier, catalysts);
         CreateRecipeCategory<T> category = factory.create(info);
         return category;

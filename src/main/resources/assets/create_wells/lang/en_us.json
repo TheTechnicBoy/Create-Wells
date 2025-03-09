@@ -1,5 +1,20 @@
 {
+  "block.create_wells.black_mechanical_well": "Black Mechanical Well",
+  "block.create_wells.blue_mechanical_well": "Blue Mechanical Well",
+  "block.create_wells.brown_mechanical_well": "Brown Mechanical Well",
+  "block.create_wells.cyan_mechanical_well": "Cyan Mechanical Well",
+  "block.create_wells.gray_mechanical_well": "Gray Mechanical Well",
+  "block.create_wells.green_mechanical_well": "Green Mechanical Well",
+  "block.create_wells.light_blue_mechanical_well": "Light Blue Mechanical Well",
+  "block.create_wells.light_gray_mechanical_well": "Light Gray Mechanical Well",
+  "block.create_wells.lime_mechanical_well": "Lime Mechanical Well",
+  "block.create_wells.magenta_mechanical_well": "Magenta Mechanical Well",
+  "block.create_wells.orange_mechanical_well": "Orange Mechanical Well",
+  "block.create_wells.pink_mechanical_well": "Pink Mechanical Well",
+  "block.create_wells.purple_mechanical_well": "Purple Mechanical Well",
   "block.create_wells.red_mechanical_well": "Red Mechanical Well",
+  "block.create_wells.white_mechanical_well": "White Mechanical Well",
+  "block.create_wells.yellow_mechanical_well": "Yellow Mechanical Well",
 
 
   "create_wells.ponder.tag.mechanical_well" : "Create Wells",
@@ -9,5 +24,7 @@
   "create_wells.ponder.mechanical_well.text_1": "This is the Mechanical Well",
   "create_wells.ponder.mechanical_well.text_2": "The Fluid it is generating is depended on the Block it is standing on.",
   "create_wells.ponder.mechanical_well.text_3": "The Well needs rotational energy to generate fluids.",
-  "create_wells.ponder.mechanical_well.text_4": "The fluid can simply be extracted using pipes."
+  "create_wells.ponder.mechanical_well.text_4": "The fluid can simply be extracted using pipes.",
+  "create_wells.ponder.mechanical_well.text_5": "For aesthetic reasons, there are different colors of the Mechanical Wells."
+
 }

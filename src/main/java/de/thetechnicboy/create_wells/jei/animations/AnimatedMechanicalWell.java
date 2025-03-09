@@ -58,11 +58,11 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
                     .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.20 : 2.20, 0)
                     .scale(23)
                     .render(graphics);
-            blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
+            blockElement(ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, 1.20, 0)
                     .scale(23)
                     .render(graphics);
-            blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
+            blockElement(ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, _Direction != FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.20 : 2.20, 0)
                     .scale(23)
                     .render(graphics);
@@ -72,11 +72,11 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
                     .scale(23)
                     .render(graphics);
         } else {
-            blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
+            blockElement(ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
                     .scale(23)
                     .render(graphics);
-            blockElement(ModBlocks.MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
+            blockElement(ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN))
                     .atLocal(-1.5, _Direction != FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
                     .scale(23)
                     .render(graphics);

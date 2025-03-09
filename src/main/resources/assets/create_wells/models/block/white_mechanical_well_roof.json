@@ -1,0 +1,7 @@
+{
+	"parent": "create_wells:block/mechanical_well_roof",
+	"textures": {
+		"0": "create_wells:block/white_roof",
+		"particle": "create_wells:block/white_roof"
+	}
+}

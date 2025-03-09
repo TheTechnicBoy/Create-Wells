@@ -3,12 +3,11 @@ package de.thetechnicboy.create_wells.block.mechanical_well;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import de.thetechnicboy.create_wells.block.mechanical_well.entity.MechanicalWellEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.InteractWithDoor;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -28,7 +27,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class MechanicalWellBlock extends DirectionalAxisKineticBlock implements IBE<MechanicalWellEntity> {
+public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock implements IBE<MechanicalWellEntity> {
 
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -58,21 +57,6 @@ public class MechanicalWellBlock extends DirectionalAxisKineticBlock implements 
                 .setValue(UPSIDE_DOWN, false));
     }
 
-
-    @Override
-    public Class<MechanicalWellEntity> getBlockEntityClass() {
-        return MechanicalWellEntity.class;
-    }
-
-    @Override
-    public BlockEntityType<? extends MechanicalWellEntity> getBlockEntityType() {
-        return ModBlocks.MECHANICAL_WELL_BLOCKENTITY.get();
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? new MechanicalWellEntity(pos, state) : null;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

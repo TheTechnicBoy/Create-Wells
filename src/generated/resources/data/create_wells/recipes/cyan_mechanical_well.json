@@ -9,7 +9,7 @@
       "item": "minecraft:bucket"
     },
     "D": {
-      "item": "minecraft:red_dye"
+      "item": "minecraft:cyan_dye"
     },
     "L": {
       "item": "minecraft:lead"
@@ -27,7 +27,7 @@
     "SBS"
   ],
   "result": {
-    "item": "create_wells:red_mechanical_well"
+    "item": "create_wells:cyan_mechanical_well"
   },
   "show_notification": false
 }

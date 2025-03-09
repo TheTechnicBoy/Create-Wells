@@ -1,0 +1,16 @@
+{
+  "type": "create_wells:fluid_extraction",
+  "condition": {
+    "direction": "NORMAL",
+    "biome": [],
+    "dimension": ["minecraft:overworld"],
+    "yMin": -255,
+    "yMax": -255,
+    "block": "#forge:stone",
+    "rpm": 64
+  },
+  "output": {
+    "fluid": "minecraft:water",
+    "amount": 20
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "create_wells:fluid_extraction",
+  "condition": {
+    "direction": "NORMAL",
+    "biome": [],
+    "dimension": ["minecraft:overworld", "minecraft:the_nether"],
+    "yMin": -255,
+    "yMax": -255,
+    "block": "minecraft:netherrack",
+    "rpm": 128
+  },
+  "output": {
+    "fluid": "minecraft:lava",
+    "amount": 50
+  }
+}

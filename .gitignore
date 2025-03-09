@@ -5,3 +5,4 @@
 /run-data
 /bin
 /.vscode
+/src/generated/resources/.cache

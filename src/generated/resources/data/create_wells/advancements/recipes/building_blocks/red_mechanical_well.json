@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "create_wells:mechanical_well"
+        "recipe": "create_wells:red_mechanical_well"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "create_wells:mechanical_well"
+      "create_wells:red_mechanical_well"
     ]
   },
   "sends_telemetry_event": false

@@ -18,6 +18,6 @@ public class ModItems {
     }
 
 
-    public static final RegistryObject<Item> MECHANICAL_WELL = ITEMS.register("mechanical_well",
+    public static final RegistryObject<Item> MECHANICAL_WELL = ITEMS.register("red_mechanical_well",
             () -> new BlockItem(ModBlocks.MECHANICAL_WELL.get(), new Item.Properties()));
 }

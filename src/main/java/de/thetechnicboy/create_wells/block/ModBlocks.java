@@ -26,10 +26,10 @@ public class ModBlocks {
         BLOCK_ENTITIES.register(eventBus);
     }
 
-    public static final RegistryObject<Block> MECHANICAL_WELL = BLOCKS.register("mechanical_well",
+    public static final RegistryObject<Block> MECHANICAL_WELL = BLOCKS.register("red_mechanical_well",
             () -> new MechanicalWellBlock());
 
-    public static final RegistryObject<BlockEntityType<MechanicalWellEntity>> MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("mechanical_well",
+    public static final RegistryObject<BlockEntityType<MechanicalWellEntity>> MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("red_mechanical_well",
             () -> BlockEntityType.Builder.of(MechanicalWellEntity::new, ModBlocks.MECHANICAL_WELL.get()).build(null));
 
 }

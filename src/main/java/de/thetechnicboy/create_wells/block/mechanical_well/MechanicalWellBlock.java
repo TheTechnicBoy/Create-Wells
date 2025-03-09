@@ -6,7 +6,9 @@ import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.InteractWithDoor;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -48,17 +50,14 @@ public class MechanicalWellBlock extends DirectionalAxisKineticBlock implements 
             SHAPE_INNER_SUPPORT
     );
 
-    public MechanicalWellBlock(){
-        this(Properties.of().instrument(NoteBlockInstrument.BASEDRUM).strength(1.5F, 6.0F).requiresCorrectToolForDrops());
-    }
-
-    public MechanicalWellBlock(Properties properties){
-        super(properties);
+    public MechanicalWellBlock() {
+        super(Properties.of().instrument(NoteBlockInstrument.BASEDRUM).strength(1.5F, 6.0F).requiresCorrectToolForDrops());
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(AXIS, Direction.Axis.X)
                 .setValue(HALF, DoubleBlockHalf.LOWER)
                 .setValue(UPSIDE_DOWN, false));
     }
+
 
     @Override
     public Class<MechanicalWellEntity> getBlockEntityClass() {

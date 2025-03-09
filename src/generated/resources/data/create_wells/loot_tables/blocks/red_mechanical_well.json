@@ -13,18 +13,18 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "block": "create_wells:mechanical_well",
+              "block": "create_wells:red_mechanical_well",
               "condition": "minecraft:block_state_property",
               "properties": {
                 "half": "lower"
               }
             }
           ],
-          "name": "create_wells:mechanical_well"
+          "name": "create_wells:red_mechanical_well"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "create_wells:blocks/mechanical_well"
+  "random_sequence": "create_wells:blocks/red_mechanical_well"
 }

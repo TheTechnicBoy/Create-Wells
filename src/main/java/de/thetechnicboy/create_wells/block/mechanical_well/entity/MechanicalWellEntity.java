@@ -3,7 +3,6 @@ package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;

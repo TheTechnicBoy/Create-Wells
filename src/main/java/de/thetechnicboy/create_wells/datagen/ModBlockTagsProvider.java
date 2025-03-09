@@ -3,7 +3,6 @@ package de.thetechnicboy.create_wells.datagen;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;

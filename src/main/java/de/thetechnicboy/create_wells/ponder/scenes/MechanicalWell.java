@@ -1,25 +1,18 @@
 package de.thetechnicboy.create_wells.ponder.scenes;
 
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
-import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
-import net.createmod.ponder.foundation.element.InputWindowElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class MechanicalWell {
     public static void ponder(SceneBuilder _scene, SceneBuildingUtil util){

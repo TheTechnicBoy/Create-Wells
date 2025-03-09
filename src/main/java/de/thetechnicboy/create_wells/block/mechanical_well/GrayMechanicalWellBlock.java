@@ -2,7 +2,6 @@ package de.thetechnicboy.create_wells.block.mechanical_well;
 
 
 import de.thetechnicboy.create_wells.block.ModBlocks;
-import de.thetechnicboy.create_wells.block.mechanical_well.entity.BlackMechanicalWellEntity;
 import de.thetechnicboy.create_wells.block.mechanical_well.entity.GrayMechanicalWellEntity;
 import de.thetechnicboy.create_wells.block.mechanical_well.entity.MechanicalWellEntity;
 import net.minecraft.core.BlockPos;

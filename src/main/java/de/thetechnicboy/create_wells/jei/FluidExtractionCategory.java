@@ -23,22 +23,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.inventory.tooltip.BundleTooltip;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import com.simibubi.create.compat.jei.category.BasinCategory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractionRecipe> {
 

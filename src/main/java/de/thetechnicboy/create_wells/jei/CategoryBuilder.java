@@ -8,7 +8,6 @@ import com.simibubi.create.infrastructure.config.CRecipes;
 import de.thetechnicboy.create_wells.CreateWells;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;

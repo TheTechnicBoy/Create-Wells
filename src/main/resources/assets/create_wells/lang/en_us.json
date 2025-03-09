@@ -16,6 +16,7 @@
   "block.create_wells.white_mechanical_well": "White Mechanical Well",
   "block.create_wells.yellow_mechanical_well": "Yellow Mechanical Well",
 
+  "itemGroup.create_wells": "Create Wells",
 
   "create_wells.ponder.tag.mechanical_well" : "Create Wells",
   "create_wells.ponder.tag.mechanical_well.description": "Wells using Create Kinetics",

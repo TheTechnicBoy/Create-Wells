@@ -103,10 +103,14 @@ public class MechanicalWell {
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(30);
+        scene.world().setKineticSpeed(util.select().position(2,1,1), 0.f);
         scene.world().showSection(util.select().position(2,1,1), Direction.WEST);
         scene.idle(20);
         scene.world().showSection(util.select().position(2,2,1), Direction.WEST);
-        scene.idle(40);
+        scene.idle(20);
+        scene.world().setKineticSpeed(util.select().position(2,1,1), 32.f);
+        scene.effects().rotationSpeedIndicator(util.grid().at(2,1,1));
+        scene.idle(20);
 
 
         scene.overlay().showText(60)

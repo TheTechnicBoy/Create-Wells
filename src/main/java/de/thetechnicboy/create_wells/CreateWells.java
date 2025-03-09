@@ -9,7 +9,11 @@ import de.thetechnicboy.create_wells.ponder.ModPonder;
 import de.thetechnicboy.create_wells.recipe.ModRecipes;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -17,6 +21,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 @Mod(CreateWells.MODID)
@@ -34,32 +41,13 @@ public class CreateWells {
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModRecipes.register(modEventBus);
+        ModCreativeTab.register(modEventBus);
 
         modEventBus.addListener(this::onClientSetup);
-        modEventBus.addListener(this::buildContents);
-
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    private void buildContents(BuildCreativeModeTabContentsEvent event){
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.BLACK_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.BLUE_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.BROWN_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.CYAN_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.GRAY_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.GREEN_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.LIGHT_BLUE_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.LIGHT_GRAY_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.LIME_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.MAGENTA_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.ORANGE_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.PINK_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.PURPLE_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.RED_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.WHITE_MECHANICAL_WELL);
-        if(event.getTab() == AllCreativeModeTabs.BASE_CREATIVE_TAB.get()) event.accept(ModItems.YELLOW_MECHANICAL_WELL);
-    }
     private void onClientSetup(FMLClientSetupEvent event){
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.BLACK_MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));
         event.enqueueWork(() -> BlockEntityRenderers.register(ModBlocks.BLUE_MECHANICAL_WELL_BLOCKENTITY.get(), WellRenderer::new));

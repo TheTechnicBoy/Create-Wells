@@ -11,7 +11,6 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
     public FluidExtractionRecipe fromJson(ResourceLocation resourceLocation, com.google.gson.JsonObject jsonObject) {
         FluidExtractionRecipe.FluidOutput output = FluidExtractionRecipe.FluidOutput.fromJSON(jsonObject.getAsJsonObject("output"));
         FluidExtractionRecipe.Condition condition = FluidExtractionRecipe.Condition.fromJSON(jsonObject.getAsJsonObject("condition"));
-        CreateWells.LOGGER.info("FluidExtractionRecipe -  FromJson");
         return FluidExtractionRecipe.registerRecipe(resourceLocation, output, condition);
     }
 
@@ -19,7 +18,6 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
     public FluidExtractionRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
         FluidExtractionRecipe.FluidOutput output = FluidExtractionRecipe.FluidOutput.fromPacket(friendlyByteBuf);
         FluidExtractionRecipe.Condition condition = FluidExtractionRecipe.Condition.fromPacket(friendlyByteBuf);
-        CreateWells.LOGGER.info("FluidExtractionRecipe - FromNetwork");
         return FluidExtractionRecipe.registerRecipe(resourceLocation, output, condition);
     }
 
@@ -27,6 +25,5 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
     public void toNetwork(FriendlyByteBuf friendlyByteBuf, FluidExtractionRecipe fluidExtractionRecipe) {
         fluidExtractionRecipe.getOutput().writeToPacket(friendlyByteBuf);
         fluidExtractionRecipe.getCondition().writeToPacket(friendlyByteBuf);
-        CreateWells.LOGGER.info("FluidExtractionRecipe - ToNetwork");
     }
 }

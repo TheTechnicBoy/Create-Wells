@@ -28,6 +28,7 @@
   "create_wells.ponder.mechanical_well.text_4": "The fluid can simply be extracted using pipes.",
   "create_wells.ponder.mechanical_well.text_5": "For aesthetic reasons, there are different colors of the Mechanical Wells.",
   "create_wells.ponder.mechanical_well.text_6": "Some recipes require a specific height.",
-  "create_wells.ponder.mechanical_well.text_7": "Some recipes also require a specific biome or dimension."
+  "create_wells.ponder.mechanical_well.text_7": "Some recipes also require a specific biome or dimension.",
+  "create_wells.ponder.mechanical_well.text_8": "There is also a special thing about the Mechanical Well."
 
 }

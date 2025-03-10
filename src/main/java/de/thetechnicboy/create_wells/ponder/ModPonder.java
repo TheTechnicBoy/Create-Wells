@@ -7,7 +7,10 @@ import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 
@@ -20,26 +23,29 @@ public class ModPonder implements PonderPlugin {
 
     @Override
     public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper){
-        ArrayList<ResourceLocation> wells = new ArrayList<>();
-        wells.add(ModBlocks.BLACK_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.BLUE_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.BROWN_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.CYAN_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.GRAY_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.GREEN_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.LIME_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.MAGENTA_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.ORANGE_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.PINK_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.PURPLE_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.RED_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.WHITE_MECHANICAL_WELL.getId());
-        wells.add(ModBlocks.YELLOW_MECHANICAL_WELL.getId());
+        ArrayList<RegistryObject<Block>> wells = new ArrayList<>();
+        wells.add(ModBlocks.BLACK_MECHANICAL_WELL);
+        wells.add(ModBlocks.BLUE_MECHANICAL_WELL);
+        wells.add(ModBlocks.BROWN_MECHANICAL_WELL);
+        wells.add(ModBlocks.CYAN_MECHANICAL_WELL);
+        wells.add(ModBlocks.GRAY_MECHANICAL_WELL);
+        wells.add(ModBlocks.GREEN_MECHANICAL_WELL);
+        wells.add(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL);
+        wells.add(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL);
+        wells.add(ModBlocks.LIME_MECHANICAL_WELL);
+        wells.add(ModBlocks.MAGENTA_MECHANICAL_WELL);
+        wells.add(ModBlocks.ORANGE_MECHANICAL_WELL);
+        wells.add(ModBlocks.PINK_MECHANICAL_WELL);
+        wells.add(ModBlocks.PURPLE_MECHANICAL_WELL);
+        wells.add(ModBlocks.RED_MECHANICAL_WELL);
+        wells.add(ModBlocks.WHITE_MECHANICAL_WELL);
+        wells.add(ModBlocks.YELLOW_MECHANICAL_WELL);
 
-        helper.forComponents(wells)
-                .addStoryBoard("mechanical_well", MechanicalWell::ponder, WELL);
+        wells.forEach(w -> {
+            helper.forComponents(w.getId())
+                    .addStoryBoard("mechanical_well", (s,u) ->
+                            MechanicalWell.ponder(s, u, w.get() ), WELL);
+        });
     }
 
     @Override

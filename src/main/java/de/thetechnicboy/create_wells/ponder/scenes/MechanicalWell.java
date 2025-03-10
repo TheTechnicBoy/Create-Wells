@@ -13,9 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.registries.RegistryObject;
 
 public class MechanicalWell {
-    public static void ponder(SceneBuilder _scene, SceneBuildingUtil util){
+    public static void ponder(SceneBuilder _scene, SceneBuildingUtil util, Block baseColor){
         CreateSceneBuilder scene = new CreateSceneBuilder(_scene);
         scene.title("mechanical_well", "Generating Fluids using the Mechanical Well");
         scene.configureBasePlate(0, 0, 4);
@@ -38,8 +39,8 @@ public class MechanicalWell {
         Selection WellMain = util.select().position(_WellMain);
         Selection WellSource = util.select().position(_WellSource);
 
-        scene.world().setBlock(_WellTop, ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
-        scene.world().setBlock(_WellMain, ModBlocks.RED_MECHANICAL_WELL.get().defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+        scene.world().setBlock(_WellTop, baseColor.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
+        scene.world().setBlock(_WellMain, baseColor.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, false), false);
 
         scene.world().showSection(WellSource, Direction.DOWN);
         scene.idle(10);
@@ -165,14 +166,16 @@ public class MechanicalWell {
         scene.world().setBlocks(util.select().fromTo(1,0,0, 1,0,2), Blocks.GRASS_BLOCK.defaultBlockState(), true);
         scene.idle(5);
         scene.world().setBlocks(util.select().fromTo(2,0,0, 2,0,2), Blocks.GRASS_BLOCK.defaultBlockState(), true);
-        scene.idle(35);
+        scene.idle(5);
+        scene.idle(30);
 
         scene.world().setBlocks(util.select().fromTo(0,0,0, 2,0,0), Blocks.NETHERRACK.defaultBlockState(), true);
         scene.idle(5);
         scene.world().setBlocks(util.select().fromTo(0,0,1, 2,0,1), Blocks.NETHERRACK.defaultBlockState(), true);
         scene.idle(5);
         scene.world().setBlocks(util.select().fromTo(0,0,2, 2,0,2), Blocks.NETHERRACK.defaultBlockState(), true);
-        scene.idle(35);
+        scene.idle(5);
+        scene.idle(30);
 
         scene.world().setBlocks(util.select().position(0,0,0), Blocks.END_STONE.defaultBlockState(), true);
         scene.world().setBlocks(util.select().position(2,0,0), Blocks.END_STONE.defaultBlockState(), true);
@@ -185,9 +188,31 @@ public class MechanicalWell {
         scene.world().setBlocks(util.select().position(1,0,2), Blocks.END_STONE.defaultBlockState(), true);
         scene.idle(5);
         scene.world().setBlocks(util.select().position(1,0,1), Blocks.END_STONE.defaultBlockState(), true);
-        scene.idle(35);
+        scene.idle(5);
+        scene.world().setBlock(util.grid().at(1,1,0), Blocks.FIRE.defaultBlockState(), false);
+        scene.idle(30);
 
-        scene.idle(40);
+
+        scene.overlay().showText(50)
+                .colored(PonderPalette.MEDIUM)
+                .text("There is also a special thing about the Mechanical Well.")
+                .pointAt(util.vector().centerOf(_WellMain).add(0,0.5,0))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(20);
+        scene.world().hideSection(WellTop, Direction.EAST);
+        scene.world().hideSection(WellMain, Direction.EAST);
+        scene.world().hideSection(WellSource, Direction.EAST);
+        scene.idle(20);
+
+
+        scene.world().setBlock(_WellSource, baseColor.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.UPPER).setValue(MechanicalWellBlock.UPSIDE_DOWN, true), false);
+        scene.world().setBlock(_WellMain, baseColor.defaultBlockState().setValue(MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER).setValue(MechanicalWellBlock.UPSIDE_DOWN, true), false);
+        scene.world().setBlock(_WellTop, SourceBlock[SourceBlock.length -1].defaultBlockState(), false);
+        UpdateKinetics(scene, util);
+        scene.world().showSection(WellTop, Direction.EAST);
+        scene.world().showSection(WellMain, Direction.EAST);
+        scene.world().showSection(WellSource, Direction.EAST);
 
     }
 

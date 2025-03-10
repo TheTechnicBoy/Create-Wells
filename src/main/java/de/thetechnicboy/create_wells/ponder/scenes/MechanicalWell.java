@@ -86,7 +86,7 @@ public class MechanicalWell {
         scene.idle(16);
         scene.overlay().showText(90)
                 .colored(PonderPalette.INPUT)
-                .text("The Well needs rotational energy to generate fluids.")
+                .text("The Well needs specific rotational energy to generate fluids.")
                 .pointAt(util.vector().centerOf(1,2,3))
                 .placeNearTarget()
                 .attachKeyFrame();
@@ -136,6 +136,59 @@ public class MechanicalWell {
             UpdateKinetics(scene, util);
             scene.idle(20);
         }
+
+        scene.idle(20);
+
+
+        scene.overlay().showText(60)
+                .colored(PonderPalette.MEDIUM)
+                .text("Some recipes require a specific height.")
+                .pointAt(util.vector().centerOf(_WellMain).add(0,0.5,0))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(20);
+        scene.overlay().showOutline(PonderPalette.MEDIUM, new Object(), util.select().fromTo(1,0,1, 1,6,1),  40);
+        scene.idle(50);
+
+        scene.overlay().showText(60)
+                .colored(PonderPalette.MEDIUM)
+                .text("Some recipes also require a specific biome or dimension.")
+                .pointAt(util.vector().centerOf(_WellMain).add(0,0.5,0))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(20);
+        scene.overlay().showOutline(PonderPalette.MEDIUM, new Object(), util.select().fromTo(0,0,0, 2,0,2),  115);
+        scene.idle(30);
+
+        scene.world().setBlocks(util.select().fromTo(0,0,0, 0,0,2), Blocks.GRASS_BLOCK.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().fromTo(1,0,0, 1,0,2), Blocks.GRASS_BLOCK.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().fromTo(2,0,0, 2,0,2), Blocks.GRASS_BLOCK.defaultBlockState(), true);
+        scene.idle(35);
+
+        scene.world().setBlocks(util.select().fromTo(0,0,0, 2,0,0), Blocks.NETHERRACK.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().fromTo(0,0,1, 2,0,1), Blocks.NETHERRACK.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().fromTo(0,0,2, 2,0,2), Blocks.NETHERRACK.defaultBlockState(), true);
+        scene.idle(35);
+
+        scene.world().setBlocks(util.select().position(0,0,0), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(2,0,0), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(0,0,2), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(2,0,2), Blocks.END_STONE.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().position(1,0,0), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(0,0,1), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(2,0,1), Blocks.END_STONE.defaultBlockState(), true);
+        scene.world().setBlocks(util.select().position(1,0,2), Blocks.END_STONE.defaultBlockState(), true);
+        scene.idle(5);
+        scene.world().setBlocks(util.select().position(1,0,1), Blocks.END_STONE.defaultBlockState(), true);
+        scene.idle(35);
+
+        scene.idle(40);
+
     }
 
     public static void UpdateKinetics(CreateSceneBuilder scene, SceneBuildingUtil util){

@@ -24,8 +24,10 @@
   "create_wells.ponder.mechanical_well.header": "Generating Fluids using the Mechanical Well",
   "create_wells.ponder.mechanical_well.text_1": "This is the Mechanical Well",
   "create_wells.ponder.mechanical_well.text_2": "The Fluid it is generating is depended on the Block it is standing on.",
-  "create_wells.ponder.mechanical_well.text_3": "The Well needs rotational energy to generate fluids.",
+  "create_wells.ponder.mechanical_well.text_3": "The Well needs specific rotational energy to generate fluids.",
   "create_wells.ponder.mechanical_well.text_4": "The fluid can simply be extracted using pipes.",
-  "create_wells.ponder.mechanical_well.text_5": "For aesthetic reasons, there are different colors of the Mechanical Wells."
+  "create_wells.ponder.mechanical_well.text_5": "For aesthetic reasons, there are different colors of the Mechanical Wells.",
+  "create_wells.ponder.mechanical_well.text_6": "Some recipes require a specific height.",
+  "create_wells.ponder.mechanical_well.text_7": "Some recipes also require a specific biome or dimension."
 
 }

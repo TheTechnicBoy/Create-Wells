@@ -36,7 +36,7 @@ public class CreateWells {
 
         modEventBus.addListener(this::onClientSetup);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
     }
 
     private void onClientSetup(FMLClientSetupEvent event){

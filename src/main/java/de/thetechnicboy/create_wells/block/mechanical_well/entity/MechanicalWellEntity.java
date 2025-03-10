@@ -1,8 +1,10 @@
 package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import de.thetechnicboy.create_wells.Config;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.minecraft.core.BlockPos;
@@ -10,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -25,7 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MechanicalWellEntity extends KineticBlockEntity {
+public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
     public static int tankCapacity = 4000;
     private boolean initialized;
@@ -35,6 +38,20 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity {
     public MechanicalWellEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
         super(type, pos, state);
 
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        //ObservePacket.send(worldPosition, 0);
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        return containedFluidTooltip(tooltip, isPlayerSneaking, this.getCapability(ForgeCapabilities.FLUID_HANDLER));
+    }
+
+    @Override
+    public float calculateStressApplied() {
+        float impact = Config.MECHANICAL_WELL_STRESS.get();
+        this.lastStressApplied = impact;
+        return impact;
     }
 
     @Override

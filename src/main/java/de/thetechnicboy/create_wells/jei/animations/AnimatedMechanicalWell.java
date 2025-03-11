@@ -82,7 +82,7 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
                     .render(graphics);
             blockElement(shaft(Direction.Axis.Z))
                     .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.70 : 1.7, 0)
-                    .rotateBlock(0,0,getCurrentAngle())
+                    .rotateBlock(0,0, getCurrentAngle())
                     .scale(23)
                     .render(graphics);
         }

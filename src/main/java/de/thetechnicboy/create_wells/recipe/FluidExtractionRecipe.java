@@ -118,7 +118,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             if(block.equals(Blocks.AIR)) return null;
         }
 
-        if(condition.rpm < 0){
+        if(condition.rpm < 0  || condition.rpm > 256){
             CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of recipe: " + resourceLocation);
             return null;
         }

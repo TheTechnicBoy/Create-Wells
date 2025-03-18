@@ -30,7 +30,7 @@ import java.util.List;
 
 public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
-    public static int tankCapacity = 4000;
+    public static int tankCapacity = Config.MECHANICAL_WELL_CAPACITY.get();
     private boolean initialized;
     private SmartFluidTankBehaviour tank;
 

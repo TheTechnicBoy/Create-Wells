@@ -6,9 +6,8 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 - **Custom Recipes**: Create your own recipes for wells using datapacks.
 - **Biome/Dimension-specific Fluids**: Depending on the biome or dimension where the well is placed, it can generate different types of fluids.
 - **Upside-down Placement**: Build wells in unconventional orientations, maybe yo need this in some recipes.
-- **Integration with Create Mod**: The wells will require mechanical energy from the [Create Mod](https://github.com/Creators-of-Create/Create) for operation.
+- **Integration with Create Mod**: The wells will require mechanical rotation from the [Create Mod](https://github.com/Creators-of-Create/Create) for operation.
 - **Integration with JEI**: The recipes of the wells will be also displayed in the [JEI](https://github.com/mezz/JustEnoughItems) menu
-- **(SOON) Energy Well**: A well powered by FE.
 - **Block Condition**: Depending on the block it is located on, it will generate other fluids.
 
 ## Adding Cutom Recepies

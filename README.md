@@ -66,7 +66,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 ```
 
 ### Examples
-This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition, it has to be placed on exactly Y-height 64, but the direction is not important. It must be placed on a dirt block and the input speed should be at least 64 rpm
+This Recipe will create 1mB Water in every Tick, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition, it has to be placed on exactly Y-height 64, but the direction is not important. It must be placed on a dirt block and the input speed should be at least 64 rpm
 ```json
 {
     "type": "create_wells:fluid_extraction",
@@ -87,7 +87,7 @@ This Recipe will create 1mB Water in 20 Ticks, if the well is placed in the biom
 ```
 
 ### KubeJS
-This Recipe will create 100mB Water in 20 Ticks, if the well is placed in the dimension minecraft:the_nether. In addition it has to be placed UpsideDown but the Y-height doesn't matter.
+This Recipe will create 100mB Water in every Tick, if the well is placed in the dimension minecraft:the_nether. In addition it has to be placed UpsideDown but the Y-height doesn't matter.
 ```js
 event.custom({
     "type": "create_wells:fluid_extraction",

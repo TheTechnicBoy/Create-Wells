@@ -16,6 +16,8 @@
   "block.create_wells.white_mechanical_well": "White Mechanical Well",
   "block.create_wells.yellow_mechanical_well": "Yellow Mechanical Well",
 
+  "block.create_wells.cow_catalyst": "Cow Catalyst",
+
   "itemGroup.create_wells": "Create Wells",
 
   "create_wells.ponder.tag.mechanical_well" : "Create Wells",

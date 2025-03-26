@@ -1,0 +1,16 @@
+{
+  "type": "create_wells:fluid_extraction",
+  "condition": {
+    "direction": "NORMAL",
+    "biome": [],
+    "dimension": ["minecraft:overworld"],
+    "yMin": -255,
+    "yMax": -255,
+    "block": "create_wells:cow_catalyst",
+    "rpm": 32
+  },
+  "output": {
+    "fluid": "minecraft:milk",
+    "amount": 2
+  }
+}

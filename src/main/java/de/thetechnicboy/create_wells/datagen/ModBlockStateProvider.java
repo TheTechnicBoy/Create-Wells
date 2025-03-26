@@ -39,6 +39,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile.UncheckedModelFile whiteWellRoof = new ModelFile.UncheckedModelFile(modLoc("block/white_mechanical_well_roof"));
         ModelFile.UncheckedModelFile yellowWellRoof = new ModelFile.UncheckedModelFile(modLoc("block/yellow_mechanical_well_roof"));
 
+        ModelFile.UncheckedModelFile cowCatalyst = new ModelFile.UncheckedModelFile(modLoc("block/cow_catalyst"));
+        this.simpleBlockWithItem(ModBlocks.COW_CATALYST.get(), cowCatalyst);
+
         this.getVariantBuilder(ModBlocks.BLACK_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: blackWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)

@@ -65,6 +65,7 @@ public class ModBlockLoot extends BlockLootSubProvider {
         this.add(ModBlocks.YELLOW_MECHANICAL_WELL.get(), (b) -> {
             return createSinglePropConditionTable(ModBlocks.YELLOW_MECHANICAL_WELL.get(), MechanicalWellBlock.HALF, DoubleBlockHalf.LOWER);
         });
+        dropSelf(ModBlocks.COW_CATALYST.get());
     }
 
     @Override

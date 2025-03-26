@@ -59,6 +59,10 @@ public class ModBlocks {
             () -> new YellowMechanicalWellBlock());
 
 
+    public static final RegistryObject<Block> COW_CATALYST = BLOCKS.register("cow_catalyst",
+            CowCatalyst::new);
+
+
     public static final RegistryObject<BlockEntityType<BlackMechanicalWellEntity>> BLACK_MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("black_mechanical_well",
             () -> BlockEntityType.Builder.of(BlackMechanicalWellEntity::new, ModBlocks.BLACK_MECHANICAL_WELL.get()).build(null));
     public static final RegistryObject<BlockEntityType<BlueMechanicalWellEntity>> BLUE_MECHANICAL_WELL_BLOCKENTITY = BLOCK_ENTITIES.register("blue_mechanical_well",

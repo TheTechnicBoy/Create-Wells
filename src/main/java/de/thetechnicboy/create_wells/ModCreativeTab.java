@@ -41,6 +41,7 @@ public class ModCreativeTab {
                                 output.accept(ModItems.RED_MECHANICAL_WELL.get());
                                 output.accept(ModItems.WHITE_MECHANICAL_WELL.get());
                                 output.accept(ModItems.YELLOW_MECHANICAL_WELL.get());
+                                output.accept(ModItems.COW_CATALYST.get());
                             })
                             .build());
 

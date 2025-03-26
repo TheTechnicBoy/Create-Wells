@@ -50,4 +50,7 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.WHITE_MECHANICAL_WELL.get(), new Item.Properties()));
     public static final RegistryObject<Item> YELLOW_MECHANICAL_WELL = ITEMS.register("yellow_mechanical_well",
             () -> new BlockItem(ModBlocks.YELLOW_MECHANICAL_WELL.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> COW_CATALYST = ITEMS.register("cow_catalyst",
+            () -> new BlockItem(ModBlocks.COW_CATALYST.get(), new Item.Properties()));
 }

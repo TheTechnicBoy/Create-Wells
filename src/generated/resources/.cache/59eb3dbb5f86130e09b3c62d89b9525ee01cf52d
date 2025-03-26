@@ -1,7 +1,8 @@
-// 1.20.1	2025-03-09T12:49:55.0092813	Loot Tables
+// 1.20.1	2025-03-26T14:19:16.7527826	Loot Tables
 87973c384a0b38b5878b81aa2409edc31e3f4fea data/create_wells/loot_tables/blocks/black_mechanical_well.json
 6886df2cbfa42798539e24776fc0d6e4c47f4773 data/create_wells/loot_tables/blocks/blue_mechanical_well.json
 ef9afdd8ff3030e721168efdb938750ce5d401f3 data/create_wells/loot_tables/blocks/brown_mechanical_well.json
+2aeb40d5f2b33276afd89d09a697ba3d0e4908ea data/create_wells/loot_tables/blocks/cow_catalyst.json
 b6d2f363fb9e65f584098fe43fc39fead6d9acee data/create_wells/loot_tables/blocks/cyan_mechanical_well.json
 b2f8f3362b9e64a1632538e3801ffe9629fe2235 data/create_wells/loot_tables/blocks/gray_mechanical_well.json
 0f7e42f7d66fe29355874287602daee0e3997a7d data/create_wells/loot_tables/blocks/green_mechanical_well.json

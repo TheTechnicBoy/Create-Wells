@@ -62,6 +62,16 @@ public class ModRecipeProvider extends RecipeProvider {
                     .save(consumer, CreateWells.genRL("dye_"+ dye.toString().replace("_dye", "") + "_mechanical_well").toString());
         });
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COW_CATALYST.get())
+                .pattern("LML")
+                .pattern("MHM")
+                .pattern("LML")
+                .define('L', Items.LEATHER)
+                .define('M', Items.MILK_BUCKET)
+                .define('H', Items.HAY_BLOCK)
+                .unlockedBy("has_well", has(ModItemTagsProvider.WELLS))
+                .showNotification(false)
+                .save(consumer);
 
 
     }

@@ -12,7 +12,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 
 ## Adding Cutom Recepies
 ### Basic Layout
-```json
+```jsonc
 {
     "type": "create_wells:fluid_extraction",
     "condition": { },
@@ -21,7 +21,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 ```
 
 ### Condition Object
-```json
+```jsonc
 {
     //The Direction of the Well, ceiling / floor.
     //Default Value: NORMAL
@@ -53,7 +53,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 ```
 
 ### Fluid Object
-```json
+```jsonc
 {
     //Which Fluid should be generated
     //Acceptable Value: Resource Location of a Minecraft or Modded FLuid
@@ -67,7 +67,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 
 ### Examples
 This Recipe will create 1mB Water in every Tick, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition, it has to be placed on exactly Y-height 64, but the direction is not important. It must be placed on a dirt block and the input speed should be at least 64 rpm
-```json
+```jsonc
 {
     "type": "create_wells:fluid_extraction",
     "condition": {

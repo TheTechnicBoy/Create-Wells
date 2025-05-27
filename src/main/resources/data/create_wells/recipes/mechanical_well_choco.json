@@ -2,16 +2,16 @@
   "type": "create_wells:fluid_extraction",
   "condition": {
     "direction": "NORMAL",
-    "biome": [],
+    "biome": ["minecraft:jungle", "minecraft:bamboo_jungle", "minecraft:sparse_jungle"],
     "dimension": ["minecraft:overworld"],
     "yMin": -255,
     "yMax": -255,
-    "block": "#forge:stone",
+    "block": "minecraft:cocoa",
     "nbt": "",
-    "rpm": 64
+    "rpm": 128
   },
   "output": {
-    "fluid": "minecraft:water",
-    "amount": 20
+    "fluid": "create:chocolate",
+    "amount": 2
   }
 }

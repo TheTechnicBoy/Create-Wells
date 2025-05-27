@@ -23,9 +23,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -46,7 +48,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                 List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, recipe.getCondition().getBlock())).stream().toList();
                 List<ItemStack> items = new ArrayList<>();
                 if(!blocks.isEmpty()) {
-                    blocks.forEach(b -> items.add(b.asItem().getDefaultInstance()));
+                    blocks.forEach(b -> items.add(b.getCloneItemStack(null, null, null, null, null)));
                 }
                 else {
                     items.add(Items.STRUCTURE_VOID.getDefaultInstance().setHoverName(Component.literal("Tag '#" + recipe.getCondition().getBlock() +"' is empty!")));
@@ -58,10 +60,11 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                         .setBackground(getRenderedSlot(), -1, -1)
                         .addItemStacks(items);
             } else {
+
                 builder
                         .addSlot(RecipeIngredientRole.INPUT, 3, getBackground().getHeight() / 2 - 7)
                         .setBackground(getRenderedSlot(), -1, -1)
-                        .addItemStack(ForgeRegistries.ITEMS.getValue(recipe.getCondition().getBlock()).getDefaultInstance());
+                        .addItemStack(ForgeRegistries.BLOCKS.getValue(recipe.getCondition().getBlock()).getCloneItemStack(null, null, null, null, null));
             }
         }
 
@@ -90,7 +93,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
         graphics.drawString(Minecraft.getInstance().font, "  " + text, getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 27, Color, false);
 
         graphics.drawString(Minecraft.getInstance().font , "Dimension:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 17, Color, false);
-        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font , "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ).getPath() ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color, false);
+        if(!condition.getDimension().isEmpty()) graphics.drawString(Minecraft.getInstance().font ,  "  " + condition.getDimension().get((int) (AnimationTickHolder.getRenderTime() % (condition.getDimension().size() * 30) ) / 30 ) .getPath(),getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color, false);
         else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 - 7, Color, false);
 
         graphics.drawString(Minecraft.getInstance().font , "Biome:" ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 3, Color, false);
@@ -108,5 +111,6 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
 
         AllGuiTextures.JEI_DOWN_ARROW.render(graphics, getWidth() / 2 - 26, getHeight() / 2);
     }
+
 
 }

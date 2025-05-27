@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -153,6 +154,8 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         }
 
         if(Math.abs(getSpeed()) < conditions.getRPM() && conditions.getRPM() != -255) Success = false;
+
+        //TODO CHECK NBT
 
         return Success;
     }

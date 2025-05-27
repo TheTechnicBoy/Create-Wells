@@ -7,6 +7,7 @@
     "yMin": -255,
     "yMax": -255,
     "block": "minecraft:netherrack",
+    "nbt": "",
     "rpm": 128
   },
   "output": {

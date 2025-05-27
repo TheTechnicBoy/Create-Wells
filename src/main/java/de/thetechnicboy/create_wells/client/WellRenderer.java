@@ -32,48 +32,62 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
     @Override
     public void renderSafe(MechanicalWellEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
+
         if (!fluid.isEmpty()) {
-            int amount = fluid.getAmount();
-            int capacity = MechanicalWellEntity.tankCapacity;
-            boolean upsideDown = well.isUpsideDown();
-
-            Level level = well.getLevel();
-            BlockPos pos = well.getBlockPos();
-
-            FluidType fluidType = fluid.getFluid().getFluidType();
-            IClientFluidTypeExtensions fluidEx = IClientFluidTypeExtensions.of(fluidType.getStateForPlacement(level, pos, fluid));
-
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(fluidEx.getStillTexture(fluid));
-
-            int color = fluidEx.getTintColor(fluidType.getStateForPlacement(level, pos, fluid), level, pos);
-
-            float corner = 3F / 16F;
-            float height = MechanicalWellBlock.getFluidRenderHeight(amount, capacity, upsideDown);
-
-            float minU = sprite.getU(3);
-            float maxU = sprite.getU(13);
-            float minV = sprite.getV(3);
-            float maxV = sprite.getV(13);
-
-            VertexConsumer builder = bufferSource.getBuffer(RenderType.translucent());
-            Matrix4f matrix = poseStack.last().pose();
-
-            if (upsideDown) {
-                builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
-                builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
-                builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
-                builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
-            } else {
-                builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
-                builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
-                builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
-                builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
-            }
-
+            renderFluid(fluid, well, poseStack, bufferSource, packedLight);
         }
 
+        renderShaft(well, poseStack, bufferSource, packedLight);
+    }
 
+    @Override
+    public boolean shouldRenderOffScreen(MechanicalWellEntity be) {
+        return true;
+    }
+
+    //TODO RENDER BUG WITH OTHER MODS FLUIDS -> Create
+    private void renderFluid(FluidStack fluid, MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        int amount = fluid.getAmount();
+        int capacity = MechanicalWellEntity.tankCapacity;
+        boolean upsideDown = well.isUpsideDown();
+
+        Level level = well.getLevel();
+        BlockPos pos = well.getBlockPos();
+
+        FluidType fluidType = fluid.getFluid().getFluidType();
+        IClientFluidTypeExtensions fluidEx = IClientFluidTypeExtensions.of(fluidType.getStateForPlacement(level, pos, fluid));
+
+
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(fluidEx.getStillTexture(fluid));
+
+        int color = fluidEx.getTintColor(fluidType.getStateForPlacement(level, pos, fluid), level, pos);
+
+        float corner = 3F / 16F;
+        float height = MechanicalWellBlock.getFluidRenderHeight(amount, capacity, upsideDown);
+
+        float minU = sprite.getU(3);
+        float maxU = sprite.getU(13);
+        float minV = sprite.getV(3);
+        float maxV = sprite.getV(13);
+
+        VertexConsumer builder = bufferSource.getBuffer(RenderType.translucent());
+        Matrix4f matrix = poseStack.last().pose();
+
+        if (upsideDown) {
+            builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
+            builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
+            builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
+            builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
+        } else {
+            builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
+            builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
+            builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
+            builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
+        }
+    }
+
+    private void renderShaft(MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         VertexConsumer vb = bufferSource.getBuffer(RenderType.solid());
 
         int packedLightmapCoords = LevelRenderer.getLightColor(well.getLevel(), well.getBlockPos());
@@ -88,12 +102,5 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
                 .rotateCentered(getAngleForBe(well, well.getBlockPos(), axis), Direction.UP)
                 .light(packedLightmapCoords)
                 .renderInto(poseStack, vb);
-
     }
-
-    @Override
-    public boolean shouldRenderOffScreen(MechanicalWellEntity be) {
-        return true;
-    }
-
 }

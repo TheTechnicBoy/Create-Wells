@@ -1,0 +1,17 @@
+{
+  "type": "create_wells:fluid_extraction",
+  "condition": {
+    "direction": "NORMAL",
+    "biome": ["minecraft:meadow", "minecraft:cherry_grove", "minecraft:cherry_grove", "minecraft:sunflower_plains", "minecraft:mangrove_swamp", "minecraft:flower_forest", "minecraft:forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest" ],
+    "dimension": ["minecraft:overworld"],
+    "yMin": -255,
+    "yMax": -255,
+    "block": "#minecraft:beehives",
+    "nbt": "",
+    "rpm": 128
+  },
+  "output": {
+    "fluid": "create:honey",
+    "amount": 2
+  }
+}

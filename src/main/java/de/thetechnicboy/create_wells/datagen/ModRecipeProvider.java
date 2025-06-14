@@ -2,24 +2,25 @@ package de.thetechnicboy.create_wells.datagen;
 
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
 
-    public ModRecipeProvider(PackOutput output){
-        super(output);
+    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries){
+        super(output, registries);
     }
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(RecipeOutput output) {
         HashMap<Item, Block> map = new HashMap<>();
         map.put(Items.BLACK_DYE, ModBlocks.BLACK_MECHANICAL_WELL.get());
         map.put(Items.BLUE_DYE, ModBlocks.BLUE_MECHANICAL_WELL.get());
@@ -51,7 +52,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .define('D', dye)
                     .unlockedBy("has_bucket", has(Items.BUCKET))
                     .showNotification(false)
-                    .save(consumer);
+                    .save(output);
         });
 
         map.forEach((dye, well) -> {
@@ -59,7 +60,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .requires(ModItemTagsProvider.WELLS)
                     .requires(dye)
                     .unlockedBy("has_bucket", has(Items.BUCKET))
-                    .save(consumer, CreateWells.genRL("dye_"+ dye.toString().replace("_dye", "") + "_mechanical_well").toString());
+                    .save(output, CreateWells.genRL("dye_"+ dye.toString().replace("_dye", "") + "_mechanical_well").toString());
         });
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COW_CATALYST.get())
@@ -71,7 +72,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('H', Items.HAY_BLOCK)
                 .unlockedBy("has_well", has(ModItemTagsProvider.WELLS))
                 .showNotification(false)
-                .save(consumer);
+                .save(output);
 
 
     }

@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.registries.RegistryObject;
 
 public class MechanicalWell {
     public static void ponder(SceneBuilder _scene, SceneBuildingUtil util, Block baseColor){

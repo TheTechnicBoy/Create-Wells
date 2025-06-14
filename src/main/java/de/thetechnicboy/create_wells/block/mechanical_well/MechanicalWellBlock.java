@@ -103,7 +103,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide) {
             if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
                 BlockPos otherPos = pos.below(state.getValue(UPSIDE_DOWN) ? -1 : 1);
@@ -118,7 +118,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
             }
         }
 
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -126,10 +126,10 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         return PushReaction.IGNORE;
     }
 
-    @Override
+    /*@Override
     public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
         return false;
-    }
+    }*/
 
     @Override
     public RenderShape getRenderShape(BlockState state) {

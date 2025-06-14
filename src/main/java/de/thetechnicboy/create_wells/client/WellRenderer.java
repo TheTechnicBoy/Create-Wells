@@ -18,9 +18,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Matrix4f;
 
 public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
@@ -75,15 +75,15 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         Matrix4f matrix = poseStack.last().pose();
 
         if (upsideDown) {
-            builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
-            builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
-            builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
-            builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
+            builder.addVertex(matrix, 1 - corner, height, corner).setColor(color).setUv(maxU, minV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
+            builder.addVertex(matrix, 1 - corner, height, 1 - corner).setColor(color).setUv(maxU, maxV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
+            builder.addVertex(matrix, corner, height, 1 - corner).setColor(color).setUv(minU, maxV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
+            builder.addVertex(matrix, corner, height, corner).setColor(color).setUv(minU, minV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
         } else {
-            builder.vertex(matrix, corner, height, corner).color(color).uv(minU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
-            builder.vertex(matrix, corner, height, 1 - corner).color(color).uv(minU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
-            builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
-            builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
+            builder.addVertex(matrix, corner, height, corner).setColor(color).setUv(minU, minV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
+            builder.addVertex(matrix, corner, height, 1 - corner).setColor(color).setUv(minU, maxV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
+            builder.addVertex(matrix, 1 - corner, height, 1 - corner).setColor(color).setUv(maxU, maxV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
+            builder.addVertex(matrix, 1 - corner, height, corner).setColor(color).setUv(maxU, minV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
         }
     }
 

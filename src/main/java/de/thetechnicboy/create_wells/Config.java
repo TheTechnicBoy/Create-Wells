@@ -1,18 +1,14 @@
 package de.thetechnicboy.create_wells;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Mod.EventBusSubscriber
 public class Config
 {
-    public static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-    public static ForgeConfigSpec COMMON_SPEC;
+    public static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
+    public static ModConfigSpec COMMON_SPEC;
 
-    public static ForgeConfigSpec.IntValue MECHANICAL_WELL_STRESS;
-    public static ForgeConfigSpec.IntValue MECHANICAL_WELL_CAPACITY;
+    public static ModConfigSpec.IntValue MECHANICAL_WELL_STRESS;
+    public static ModConfigSpec.IntValue MECHANICAL_WELL_CAPACITY;
 
     static {
         COMMON_BUILDER.comment("Mechanical Well").push("mechanical_well");

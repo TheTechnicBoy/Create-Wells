@@ -6,24 +6,24 @@ import de.thetechnicboy.create_wells.ponder.scenes.MechanicalWell;
 import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class ModPonder implements PonderPlugin {
 
     @Override
-    public String getModId() { return CreateWells.MODID;}
+    public @NotNull String getModId() { return CreateWells.MODID;}
 
     public static final ResourceLocation WELL = CreateWells.genRL("mechanical_well");
 
     @Override
-    public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper){
-        ArrayList<RegistryObject<Block>> wells = new ArrayList<>();
+    public void registerScenes(@NotNull PonderSceneRegistrationHelper<ResourceLocation> helper){
+        ArrayList<DeferredHolder<Block,Block>> wells = new ArrayList<>();
         wells.add(ModBlocks.BLACK_MECHANICAL_WELL);
         wells.add(ModBlocks.BLUE_MECHANICAL_WELL);
         wells.add(ModBlocks.BROWN_MECHANICAL_WELL);
@@ -58,21 +58,21 @@ public class ModPonder implements PonderPlugin {
                 .register();
 
         helper.addToTag(WELL)
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.BLACK_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.BLUE_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.BROWN_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.CYAN_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.GRAY_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.GREEN_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.LIME_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.MAGENTA_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.ORANGE_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.PINK_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.PURPLE_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.WHITE_MECHANICAL_WELL.get()))
-                .add(ForgeRegistries.BLOCKS.getKey(ModBlocks.YELLOW_MECHANICAL_WELL.get()));
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.BLACK_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.BLUE_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.BROWN_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.CYAN_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.GRAY_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.GREEN_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.LIME_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.MAGENTA_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.ORANGE_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.PINK_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.PURPLE_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.WHITE_MECHANICAL_WELL.get()))
+                .add(BuiltInRegistries.BLOCK.getKey(ModBlocks.YELLOW_MECHANICAL_WELL.get()));
 
     }
 }

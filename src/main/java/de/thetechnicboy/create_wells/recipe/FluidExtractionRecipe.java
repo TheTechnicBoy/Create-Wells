@@ -1,30 +1,43 @@
 package de.thetechnicboy.create_wells.recipe;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.thetechnicboy.create_wells.CreateWells;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FluidExtractionRecipe implements Recipe<Inventory> {
+public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
     private static final boolean DEBUG_MODE_PRINTLN = false;
     private final ResourceLocation id;
     private final FluidOutput output;
     private final Condition condition;
+
+    public static final Codec<FluidExtractionRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceLocation.CODEC.fieldOf("id").forGetter(FluidExtractionRecipe::getId),
+            FluidOutput.CODEC.fieldOf("output").forGetter(FluidExtractionRecipe::getOutput),
+            Condition.CODEC.fieldOf("condition").forGetter(FluidExtractionRecipe::getCondition)
+    ).apply(instance, FluidExtractionRecipe::new));
 
     public Condition getCondition() {
         return condition;
@@ -62,12 +75,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean matches(Inventory inventory, Level level) {
+    public boolean matches(FluidExtractionContainer container, Level level) {
         return true;
     }
 
     @Override
-    public ItemStack assemble(Inventory inventory, RegistryAccess registryAccess) {
+    public ItemStack assemble(FluidExtractionContainer container, HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 
@@ -77,13 +90,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 
 
 
-    @Override
     public ResourceLocation getId() {
         return id;
     }
@@ -116,7 +128,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         }
 
         if(!condition.BlockTag && condition.block != null){
-            Block block = ForgeRegistries.BLOCKS.getValue(condition.getBlock());
+            Block block = BuiltInRegistries.BLOCK.get(condition.getBlock());
             if(block.equals(Blocks.AIR)) return null;
         }
 
@@ -134,6 +146,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final Fluid fluid;
         private final int amount;
 
+        public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceLocation.CODEC.fieldOf("fluid").forGetter(fo -> BuiltInRegistries.FLUID.getKey(fo.fluid)),
+                Codec.INT.fieldOf("amount").forGetter(FluidOutput::getAmount)
+        ).apply(instance, (fluidRL, amount) -> new FluidOutput(BuiltInRegistries.FLUID.get(fluidRL), amount)));
+
+
         public int getAmount() {
             return amount;
         }
@@ -150,20 +168,20 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             Fluid fluid = null;
             int amount = 0;
 
-            try { fluid = ForgeRegistries.FLUIDS.getValue(CreateWells.parseRL(jsonObject.get("fluid").getAsString())); } catch (Exception ex) {};
-            try { amount = jsonObject.get("amount").getAsInt(); } catch (Exception ex) {};
+            try { fluid = BuiltInRegistries.FLUID.get(CreateWells.parseRL(jsonObject.get("fluid").getAsString())); } catch (Exception ignored) {};
+            try { amount = jsonObject.get("amount").getAsInt(); } catch (Exception ignored) {};
 
             return new FluidOutput(fluid, amount);
         }
 
         public static FluidOutput fromPacket(FriendlyByteBuf buf) {
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(buf.readResourceLocation());
+            Fluid fluid = BuiltInRegistries.FLUID.get(buf.readResourceLocation());
             int amount = buf.readInt();
             return new FluidOutput(fluid, amount);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
-            buf.writeResourceLocation(ForgeRegistries.FLUIDS.getKey(this.fluid));
+            buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(this.fluid));
             buf.writeInt(this.amount);
         }
     }
@@ -178,6 +196,18 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final boolean BlockTag;
         private final String nbt;
         private final int rpm;
+
+        public static final Codec<Condition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Direction.CODEC.fieldOf("direction").forGetter(Condition::getDirection),
+                Codec.list(ResourceLocation.CODEC).fieldOf("biome").forGetter(Condition::getBiome),
+                Codec.list(ResourceLocation.CODEC).fieldOf("dimension").forGetter(Condition::getDimension),
+                Codec.INT.fieldOf("yMin").forGetter(Condition::getYMin),
+                Codec.INT.fieldOf("yMax").forGetter(Condition::getYMax),
+                ResourceLocation.CODEC.fieldOf("block").forGetter(Condition::getBlock),
+                Codec.BOOL.fieldOf("blockTag").forGetter(Condition::isBlockTag),
+                Codec.STRING.fieldOf("nbt").forGetter(Condition::getNbt),
+                Codec.INT.fieldOf("rpm").forGetter(Condition::getRPM)
+        ).apply(instance, Condition::new));
 
 
         public Direction getDirection() {
@@ -229,7 +259,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             boolean blockTag = false;
             int rpm = 0;
 
-            try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ex) {}
+            try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ignored) {}
             Direction direction;
             if(_direction == null) direction = Direction.NORMAL;
             else if(_direction.equalsIgnoreCase("NORMAL")) direction = Direction.NORMAL;
@@ -242,20 +272,20 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
                 for (int i = 0; i < biomesArray.size(); i++) {
                     biomes.add(CreateWells.parseRL(biomesArray.get(i).getAsString()));
                 }
-            } catch (Exception ex) {}
+            } catch (Exception ignored) {}
 
             try{
                 com.google.gson.JsonArray dimensionArray = jsonObject.getAsJsonArray("dimension");
                 for (int i = 0; i < dimensionArray.size(); i++) {
                     dimensions.add(CreateWells.parseRL(dimensionArray.get(i).getAsString()));
                 }
-            } catch (Exception ex) {}
+            } catch (Exception ignored) {}
 
             try{
                 blockTag = jsonObject.get("block").getAsString().startsWith("#");
                 if(blockTag) block = CreateWells.parseRL(jsonObject.get("block").getAsString().split("#")[1]);
                 else block = CreateWells.parseRL(jsonObject.get("block").getAsString());
-            } catch (Exception ex) {}
+            } catch (Exception ignored) {}
 
             try{
                 if(!blockTag){
@@ -264,12 +294,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
                         nbt = tempNbt;
                     }
                 }
-            }catch(Exception ex) {}
+            }catch(Exception ignored) {}
 
-            try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ex) {}
-            try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ex) {}
+            try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ignored) {}
+            try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ignored) {}
 
-            try{ rpm = jsonObject.get("rpm").getAsInt(); } catch (Exception ex) {}
+            try{ rpm = jsonObject.get("rpm").getAsInt(); } catch (Exception ignored) {}
 
             return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, nbt, rpm);
         }
@@ -336,6 +366,17 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         BOTH,
         UPSIDE_DOWN,
         NORMAL,
-        ERROR,
+        ERROR;
+
+        public static final Codec<Direction> CODEC = Codec.STRING.xmap(
+        s -> {
+            try {
+                return Direction.valueOf(s.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ERROR;
+            }
+        },
+        Direction::name
+    );
     }
 }

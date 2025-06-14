@@ -9,25 +9,22 @@ import de.thetechnicboy.create_wells.recipe.ModRecipes;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 
 @Mod(CreateWells.MODID)
 public class CreateWells {
-
     public static final String MODID = "create_wells";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static ResourceLocation genRL(String key) { return ResourceLocation.tryBuild(MODID, key); }
     public static ResourceLocation parseRL(String key) { return ResourceLocation.parse(key); }
 
-    public CreateWells() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public CreateWells(IEventBus modEventBus, ModContainer modContainer) {
 
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
@@ -36,7 +33,7 @@ public class CreateWells {
 
         modEventBus.addListener(this::onClientSetup);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
     }
 
     private void onClientSetup(FMLClientSetupEvent event){

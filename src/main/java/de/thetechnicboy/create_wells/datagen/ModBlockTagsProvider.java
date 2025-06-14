@@ -6,10 +6,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 import java.util.concurrent.CompletableFuture;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
@@ -20,7 +21,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         super(output, lookupProvider, CreateWells.MODID, existingFileHelper);
     }
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(Provider provider) {
         tag(WELLS).add(ModBlocks.BLACK_MECHANICAL_WELL.get());
         tag(WELLS).add(ModBlocks.BLUE_MECHANICAL_WELL.get());
         tag(WELLS).add(ModBlocks.BROWN_MECHANICAL_WELL.get());

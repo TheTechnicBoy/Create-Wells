@@ -9,7 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider {
@@ -19,7 +20,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         super(output, lookupProvider, blockTags, CreateWells.MODID, existingFileHelper);
     }
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(Provider provider) {
         copy(ModBlockTagsProvider.WELLS, WELLS);
     }
 }

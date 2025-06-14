@@ -6,20 +6,20 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.jei.animations.AnimatedMechanicalWell;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -29,8 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,8 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                     blocks.forEach(b -> items.add(b.getCloneItemStack(null, null, null, null, null)));
                 }
                 else {
-                    items.add(Items.STRUCTURE_VOID.getDefaultInstance().setHoverName(Component.literal("Tag '#" + recipe.getCondition().getBlock() +"' is empty!")));
+                    //items.add(Items.STRUCTURE_VOID.getDefaultInstance()setHoverName(Component.literal("Tag '#" + recipe.getCondition().getBlock() +"' is empty!")));
+                    items.add(Items.STRUCTURE_VOID.getDefaultInstance();
                 }
 
 
@@ -64,7 +64,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                 builder
                         .addSlot(RecipeIngredientRole.INPUT, 3, getBackground().getHeight() / 2 - 7)
                         .setBackground(getRenderedSlot(), -1, -1)
-                        .addItemStack(ForgeRegistries.BLOCKS.getValue(recipe.getCondition().getBlock()).getCloneItemStack(null, null, null, null, null));
+                        .addItemStack(BuiltInRegistries.BLOCK.get(recipe.getCondition().getBlock()).getCloneItemStack(null, null, null, null, null));
             }
         }
 
@@ -74,16 +74,17 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
         builder
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)
-                .addIngredient(ForgeTypes.FLUID_STACK,  fluidStack)
-                .addRichTooltipCallback((view, tooltip) -> {
-                    if(outputAmount < 1000) tooltip.add(FormattedText.of(outputAmount + "mB/tick"));
-                    if(outputAmount >= 1000) tooltip.add(FormattedText.of(Float.toString(((float)outputAmount)/1000.0f) + "B/tick"));
+                .addIngredient(NeoForgeTypes.FLUID_STACK,  fluidStack)
+                .addTooltipCallback((view, tooltip) -> {
+
+                    if(outputAmount < 1000) tooltip.add(Component.literal(outputAmount + "mB/tick"));
+                    if(outputAmount >= 1000) tooltip.add(Component.literal(Float.toString(((float)outputAmount)/1000.0f) + "B/tick"));
                 });
     }
 
     @Override
     public void draw(FluidExtractionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY){
-        super.draw(recipe, recipeSlotsView, graphics, mouseX, mouseY);
+        //super.draw(recipe, recipeSlotsView, graphics, mouseX, mouseY);
 
         FluidExtractionRecipe.Condition condition = recipe.getCondition();
 

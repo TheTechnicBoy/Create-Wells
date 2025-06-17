@@ -3,12 +3,14 @@ package de.thetechnicboy.create_wells.datagen;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +46,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .pattern("RDR")
                     .pattern("/L/")
                     .pattern("SBS")
-                    .define('R', Tags.Items.INGOTS_BRICK)
+                    .define('R', Items.BRICKS)
                     .define('/', com.simibubi.create.AllBlocks.SHAFT.get())
                     .define('L', Items.LEAD)
                     .define('B', Items.BUCKET)

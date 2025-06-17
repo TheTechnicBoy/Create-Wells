@@ -1,33 +1,28 @@
 package de.thetechnicboy.create_wells.jei;
 
-import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.jei.animations.AnimatedMechanicalWell;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -44,14 +39,15 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
     public void setRecipe(IRecipeLayoutBuilder builder, FluidExtractionRecipe recipe, IFocusGroup focuses) {
         if(recipe.getCondition().getBlock() != null) {
             if (recipe.getCondition().isBlockTag()) {
-                List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, recipe.getCondition().getBlock())).stream().toList();
+                List<Block> blocks = BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, recipe.getCondition().getBlock())).map(tag -> tag.stream().map(Holder::value).toList()).orElse(List.of());
                 List<ItemStack> items = new ArrayList<>();
                 if(!blocks.isEmpty()) {
                     blocks.forEach(b -> items.add(b.getCloneItemStack(null, null, null, null, null)));
                 }
                 else {
-                    //items.add(Items.STRUCTURE_VOID.getDefaultInstance()setHoverName(Component.literal("Tag '#" + recipe.getCondition().getBlock() +"' is empty!")));
-                    items.add(Items.STRUCTURE_VOID.getDefaultInstance();
+                    ItemStack stack = new ItemStack(Items.STRUCTURE_VOID);
+                    stack.set(DataComponents.CUSTOM_NAME,  Component.literal("Tag '#" + recipe.getCondition().getBlock() +"' is empty!"));
+                    items.add(stack);
                 }
 
 

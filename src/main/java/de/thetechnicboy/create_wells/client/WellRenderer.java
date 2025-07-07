@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -45,7 +46,6 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         return true;
     }
 
-    //TODO RENDER BUG WITH OTHER MODS FLUIDS -> Create
     private void renderFluid(FluidStack fluid, MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         int amount = fluid.getAmount();
         int capacity = MechanicalWellEntity.tankCapacity;
@@ -57,11 +57,23 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         FluidType fluidType = fluid.getFluid().getFluidType();
         IClientFluidTypeExtensions fluidEx = IClientFluidTypeExtensions.of(fluidType.getStateForPlacement(level, pos, fluid));
 
+        // Verbessertes Texture-Handling für Create Fluids
+        ResourceLocation stillTexture = fluidEx.getStillTexture(fluid);
+        
+        // Fallback für Create Fluids
+        if (stillTexture == null) {
+            stillTexture = fluidEx.getStillTexture();
+        }
+        
+        // Weitere Fallbacks
+        if (stillTexture == null) {
+            stillTexture = ResourceLocation.tryBuild("minecraft", "block/water_still");
+        }
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidEx.getStillTexture(fluid));
+                .apply(stillTexture);
 
-        int color = fluidEx.getTintColor(fluidType.getStateForPlacement(level, pos, fluid), level, pos);
+        int color = getFluidColor(fluidEx, fluidType, fluid, level, pos);
 
         float corner = 3F / 16F;
         float height = MechanicalWellBlock.getFluidRenderHeight(amount, capacity, upsideDown);
@@ -74,6 +86,12 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         VertexConsumer builder = bufferSource.getBuffer(RenderType.translucent());
         Matrix4f matrix = poseStack.last().pose();
 
+        int alpha = (color >> 24) & 0xFF;
+        if (alpha == 0) {
+            alpha = 255;
+            color = (color & 0xFFFFFF) | (alpha << 24);
+        }
+
         if (upsideDown) {
             builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, -1, 0).endVertex();
             builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, -1, 0).endVertex();
@@ -85,6 +103,29 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
             builder.vertex(matrix, 1 - corner, height, 1 - corner).color(color).uv(maxU, maxV).uv2(packedLight).normal(0, 1, 0).endVertex();
             builder.vertex(matrix, 1 - corner, height, corner).color(color).uv(maxU, minV).uv2(packedLight).normal(0, 1, 0).endVertex();
         }
+    }
+
+    private int getFluidColor(IClientFluidTypeExtensions fluidEx, FluidType fluidType, FluidStack fluid, Level level, BlockPos pos) {
+        try {
+
+            int color = fluidEx.getTintColor(fluidType.getStateForPlacement(level, pos, fluid), level, pos);
+
+            if (color != 0 && (color & 0xFFFFFF) != 0) {
+                return color;
+            }
+
+            color = fluidEx.getTintColor();
+            if (color != 0 && (color & 0xFFFFFF) != 0) {
+                return color;
+            }
+
+            color = fluidEx.getTintColor(fluid);
+            if (color != 0 && (color & 0xFFFFFF) != 0) {
+                return color;
+            }
+            
+        } catch (Exception e) {}
+        return 0xFFFFFFFF;
     }
 
     private void renderShaft(MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {

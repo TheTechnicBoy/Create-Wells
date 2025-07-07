@@ -85,24 +85,38 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         super.write(compoundTag, clientPacket);
         tank.write(compoundTag, clientPacket);
     }
+
+    private int tickCounter = 0;
+    private FluidExtractionRecipe.FluidOutput cachedFluidOutput;
+
     @Override
     public void tick(){
-
         super.tick();
 
-        FluidExtractionRecipe.FluidOutput fluidToFill = this.getFluidToFill();
+        if(tickCounter % 20 == 0 || cachedFluidOutput == null) {
+            cachedFluidOutput = this.getFluidToFill();
+        }
+        tickCounter++;
 
         FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
-        FluidStack newFluid = new FluidStack(fluidToFill.getFluid(), fluidToFill.getAmount() + oldFluid.getAmount());
+        FluidStack newFluid = new FluidStack(cachedFluidOutput.getFluid(), cachedFluidOutput.getAmount() + oldFluid.getAmount());
 
         if(!oldFluid.isEmpty() && oldFluid.getFluid() != newFluid.getFluid()) return;
         if(oldFluid.getAmount() >= tankCapacity) return;
 
-        if(fluidToFill.getAmount() + oldFluid.getAmount() > tankCapacity) this.tank.getPrimaryHandler().setFluid(new FluidStack(fluidToFill.getFluid(), tankCapacity));
-        else this.tank.getPrimaryHandler().setFluid(newFluid);
+        boolean hasChanged = false;
+        if(cachedFluidOutput.getAmount() + oldFluid.getAmount() > tankCapacity) {
+            this.tank.getPrimaryHandler().setFluid(new FluidStack(cachedFluidOutput.getFluid(), tankCapacity));
+            hasChanged = true;
+        } else if(cachedFluidOutput.getAmount() > 0) {
+            this.tank.getPrimaryHandler().setFluid(newFluid);
+            hasChanged = true;
+        }
 
-        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
-        this.setChanged();
+        if(hasChanged) {
+            this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+            this.setChanged();
+        }
     }
 
 

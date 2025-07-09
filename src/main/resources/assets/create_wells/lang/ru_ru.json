@@ -1,0 +1,35 @@
+{
+  "block.create_wells.black_mechanical_well": "Черный Механический Колодец",
+  "block.create_wells.blue_mechanical_well": "Синий Механический Колодец",
+  "block.create_wells.brown_mechanical_well": "Коричневый Механический Колодец",
+  "block.create_wells.cyan_mechanical_well": "Бирюзовый Механический Колодец",
+  "block.create_wells.gray_mechanical_well": "Серый Механический Колодец",
+  "block.create_wells.green_mechanical_well": "Зеленый Механический Колодец",
+  "block.create_wells.light_blue_mechanical_well": "Светло-синий Механический Колодец",
+  "block.create_wells.light_gray_mechanical_well": "Светло-серый Механический Колодец",
+  "block.create_wells.lime_mechanical_well": "Лаймовый Механический Колодец",
+  "block.create_wells.magenta_mechanical_well": "Пурпурный Механический Колодец",
+  "block.create_wells.orange_mechanical_well": "Оранжевый Механический Колодец",
+  "block.create_wells.pink_mechanical_well": "Розовый Механический Колодец",
+  "block.create_wells.purple_mechanical_well": "Фиолетовый Механический Колодец",
+  "block.create_wells.red_mechanical_well": "Красный Механический Колодец",
+  "block.create_wells.white_mechanical_well": "Белый Механический Колодец",
+  "block.create_wells.yellow_mechanical_well": "Желтый Механический Колодец",
+
+  "block.create_wells.cow_catalyst": "Коровий катализатор",
+
+  "itemGroup.create_wells": "Create Wells",
+
+  "create_wells.ponder.tag.mechanical_well": "Create Wells",
+  "create_wells.ponder.tag.mechanical_well.description": "Колодцы, использующие кинетику Create",
+
+  "create_wells.ponder.mechanical_well.header": "Генерация жидкостей с помощью Механического Колодца",
+  "create_wells.ponder.mechanical_well.text_1": "Это Механический Колодец.",
+  "create_wells.ponder.mechanical_well.text_2": "Жидкость, которую он генерирует, зависит от блока, на котором он стоит.",
+  "create_wells.ponder.mechanical_well.text_3": "Колодец требует определенной вращательной энергии для генерации жидкости.",
+  "create_wells.ponder.mechanical_well.text_4": "Жидкость можно извлекать с помощью труб.",
+  "create_wells.ponder.mechanical_well.text_5": "Для эстетики Колодцы могут быть разного цвета.",
+  "create_wells.ponder.mechanical_well.text_6": "Некоторые рецепты требуют определенной высоты.",
+  "create_wells.ponder.mechanical_well.text_7": "Для некоторых рецептов также нужен определенный биом или измерение.",
+  "create_wells.ponder.mechanical_well.text_8": "Есть еще одна интересная особенность Механического Колодца."
+}

@@ -1,6 +1,7 @@
 package de.thetechnicboy.create_wells.recipe;
 
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.thetechnicboy.create_wells.CreateWells;
@@ -13,14 +14,17 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {
     @Override
     public MapCodec<FluidExtractionRecipe> codec() {
+        System.out.println("codec() wurde aufgerufen!");
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("type").forGetter(FluidExtractionRecipe::getId),
                 FluidExtractionRecipe.FluidOutput.CODEC.fieldOf("output").forGetter(FluidExtractionRecipe::getOutput),
                 FluidExtractionRecipe.Condition.CODEC.fieldOf("condition").forGetter(FluidExtractionRecipe::getCondition)
-        ).apply(instance, (id, output, condition) -> FluidExtractionRecipe.registerRecipe(id, output, condition)));
+        ).apply(instance, (output, condition) -> FluidExtractionRecipe.registerRecipe(CreateWells.genRL("test"), output, condition)));
     }
 
+
+    @Override
     public StreamCodec<RegistryFriendlyByteBuf, FluidExtractionRecipe> streamCodec() {
+        System.out.println("CODEC WIRD GESTREAMT");
         return new StreamCodec<>() {
             @Override
             public void encode(RegistryFriendlyByteBuf buf, FluidExtractionRecipe recipe) {

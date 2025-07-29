@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "create_wells:lime_mechanical_well",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ],
+          "name": "create_wells:lime_mechanical_well"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "create_wells:blocks/lime_mechanical_well"
+}

@@ -10,13 +10,15 @@ import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
+import java.util.Optional;
 
 
 public class AnimatedMechanicalWell extends AnimatedKinetics {
@@ -37,7 +39,16 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
         this.block = block;
         this.blockTag = blockTag;
 
-        blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, block)).stream().toList();
+        Optional<? extends HolderSet.Named<Block>> tagOptional =
+                BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, block));
+
+        if(tagOptional.isPresent()) {
+            blocks = tagOptional.get().stream()
+                    .map(holder -> holder.value())
+                    .toList();
+        } else {
+            blocks = List.of();
+        }
     }
     @Override
     public void  draw(GuiGraphics graphics, int xOffset, int yOffset) {
@@ -99,7 +110,7 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
     private Block getBlock(){
         if(block == null) return null;
         if(!blockTag)
-            return ForgeRegistries.BLOCKS.getValue(block);
+            return BuiltInRegistries.BLOCK.get(block);
         else {
             if(blocks.isEmpty()) return null;
             double cycle = (AnimationTickHolder.getRenderTime() - offset * 8) % (blocks.size() * 20);

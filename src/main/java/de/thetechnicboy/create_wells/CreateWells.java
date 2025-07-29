@@ -5,7 +5,7 @@ import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.client.WellRenderer;
 import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.ponder.ModPonder;
-import de.thetechnicboy.create_wells.recipe.ModRecipes;
+import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
@@ -21,14 +21,21 @@ public class CreateWells {
     public static final String MODID = "create_wells";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static ResourceLocation genRL(String key) { return ResourceLocation.tryBuild(MODID, key); }
+    public static ResourceLocation genRL(String key) {
+        ResourceLocation rl = ResourceLocation.tryBuild(MODID, key);
+        if (rl == null) {
+            throw new IllegalArgumentException("Invalid ResourceLocation key: " + key);
+        }
+        System.out.println("Generated RL: " + rl.toString());
+        return rl;
+    }
     public static ResourceLocation parseRL(String key) { return ResourceLocation.parse(key); }
 
     public CreateWells(IEventBus modEventBus, ModContainer modContainer) {
 
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
-        ModRecipes.register(modEventBus);
+        AllRecipeTypes.register(modEventBus);
         ModCreativeTab.register(modEventBus);
 
         modEventBus.addListener(this::onClientSetup);

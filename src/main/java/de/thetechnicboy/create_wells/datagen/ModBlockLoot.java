@@ -7,6 +7,8 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,6 +73,8 @@ public class ModBlockLoot extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).toList();
+        return ModBlocks.BLOCKS.getEntries().stream()
+                .map(holder -> (Block) holder.get())
+                .toList();
     }
 }

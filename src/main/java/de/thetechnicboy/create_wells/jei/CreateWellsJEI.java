@@ -4,15 +4,16 @@ import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
-import de.thetechnicboy.create_wells.recipe.ModRecipes;
+import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IIngredientManager;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +22,18 @@ import java.util.List;
 public class CreateWellsJEI implements IModPlugin {
 
     private static final ResourceLocation ID = CreateWells.genRL("jei_plugin");
+
+
+    private final List<CreateRecipeCategory<?>> allCategories = new ArrayList<>();
     public IIngredientManager ingredientManager;
 
-    final List<CreateRecipeCategory<?>> ALL = new ArrayList<>();
-    @Override
-    public ResourceLocation getPluginUid() {
-        return ID;
-    }
+    public static IJeiRuntime runtime;
 
-    @Override
-    public void registerCategories(IRecipeCategoryRegistration registration) {
-        ALL.clear();
+    public void loadCategories(){
+        allCategories.clear();
 
-        ALL.add(builder(FluidExtractionRecipe.class)
-                .addTypedRecipes(() -> ModRecipes.FLUID_EXTRACTION_TYPE)
+        CreateRecipeCategory<?> fluid_extraction = new CreateRecipeCategory.Builder(FluidExtractionRecipe.class)
+                .addTypedRecipes(() -> AllRecipeTypes.FLUID_EXTRACTION_TYPE)
                 .catalyst(ModBlocks.BLACK_MECHANICAL_WELL::get)
                 .catalyst(ModBlocks.BLUE_MECHANICAL_WELL::get)
                 .catalyst(ModBlocks.BROWN_MECHANICAL_WELL::get)
@@ -53,26 +52,34 @@ public class CreateWellsJEI implements IModPlugin {
                 .catalyst(ModBlocks.YELLOW_MECHANICAL_WELL::get)
                 .itemIcon(ModBlocks.RED_MECHANICAL_WELL.get())
                 .emptyBackground(180, 80)
-                .build("fluid_extraction", FluidExtractionCategory::new)
-        );
+                .build(CreateWells.genRL("fluid_extraction"), FluidExtractionCategory::new);
+        allCategories.add(fluid_extraction);
+    }
 
-        ALL.forEach(registration::addRecipeCategories);
+    @Override
+    public ResourceLocation getPluginUid() {
+        return ID;
+    }
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        loadCategories();
+        registration.addRecipeCategories(allCategories.toArray(IRecipeCategory[]::new));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ingredientManager = registration.getIngredientManager();
-        ALL.forEach(c -> c.registerRecipes(registration));
+        allCategories.forEach(c -> c.registerRecipes(registration));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ALL.forEach(c -> c.registerCatalysts(registration));
+        allCategories.forEach(c -> c.registerCatalysts(registration));
     }
 
-
-    private <T extends Recipe<?>> CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
-        return new CategoryBuilder<>(recipeClass);
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime runtime) {
+        CreateWellsJEI.runtime = runtime;
     }
-
 }

@@ -113,10 +113,7 @@ dependencies {
     runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
-
-    compileOnly("mezz.jei:jei-1.21-neoforge-api:${jei_version}")
-    runtimeOnly("mezz.jei:jei-1.21-neoforge:${jei_version}")
+    implementation("mezz.jei:jei-${jei_minecraft_version}-neoforge:${jei_version}")
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

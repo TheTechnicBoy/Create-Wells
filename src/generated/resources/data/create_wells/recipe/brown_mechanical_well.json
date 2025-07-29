@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "/": {
+      "item": "create:shaft"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "D": {
+      "item": "minecraft:brown_dye"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "R": {
+      "item": "minecraft:bricks"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "pattern": [
+    "RDR",
+    "/L/",
+    "SBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_wells:brown_mechanical_well"
+  },
+  "show_notification": false
+}

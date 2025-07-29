@@ -62,7 +62,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .requires(ModItemTagsProvider.WELLS)
                     .requires(dye)
                     .unlockedBy("has_bucket", has(Items.BUCKET))
-                    .save(output, CreateWells.genRL("dye_"+ dye.toString().replace("_dye", "") + "_mechanical_well").toString());
+                    .save(output, CreateWells.genRL("dye_"+ dye.toString().replace("minecraft:", "").replace("_dye", "") + "_mechanical_well").toString());
         });
 
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COW_CATALYST.get())

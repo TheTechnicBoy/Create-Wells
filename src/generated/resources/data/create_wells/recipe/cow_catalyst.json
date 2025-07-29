@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": {
+      "item": "minecraft:hay_block"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "M": {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+  "pattern": [
+    "LML",
+    "MHM",
+    "LML"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_wells:cow_catalyst"
+  },
+  "show_notification": false
+}

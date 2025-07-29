@@ -33,6 +33,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
 
     public FluidExtractionCategory(Info<FluidExtractionRecipe> info) {
         super(info);
+        System.out.println("FLUID Extraction Category");
     }
 
     @Override
@@ -71,8 +72,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                 .addSlot(RecipeIngredientRole.OUTPUT, getWidth() / 2 - 20, getBackground().getHeight() - 20)
                 .setBackground(getRenderedSlot(), -1, -1)
                 .addIngredient(NeoForgeTypes.FLUID_STACK,  fluidStack)
-                .addTooltipCallback((view, tooltip) -> {
-
+                .addRichTooltipCallback((view, tooltip) -> {
                     if(outputAmount < 1000) tooltip.add(Component.literal(outputAmount + "mB/tick"));
                     if(outputAmount >= 1000) tooltip.add(Component.literal(Float.toString(((float)outputAmount)/1000.0f) + "B/tick"));
                 });

@@ -4,17 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.thetechnicboy.create_wells.CreateWells;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -28,16 +22,10 @@ import java.util.List;
 
 public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
-    private static final boolean DEBUG_MODE_PRINTLN = false;
+    private static final boolean DEBUG_MODE_PRINTLN = true;
     private final ResourceLocation id;
     private final FluidOutput output;
     private final Condition condition;
-
-    public static final Codec<FluidExtractionRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(FluidExtractionRecipe::getId),
-            FluidOutput.CODEC.fieldOf("output").forGetter(FluidExtractionRecipe::getOutput),
-            Condition.CODEC.fieldOf("condition").forGetter(FluidExtractionRecipe::getCondition)
-    ).apply(instance, FluidExtractionRecipe::new));
 
     public Condition getCondition() {
         return condition;
@@ -102,16 +90,21 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.FLUID_EXTRACTION_RECIPE_SERIALIZER.get();
+        return AllRecipeTypes.FLUID_EXTRACTION_SERIALIZER.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.FLUID_EXTRACTION_TYPE;
+        return AllRecipeTypes.FLUID_EXTRACTION_TYPE.get();
     }
 
 
     public static FluidExtractionRecipe registerRecipe(ResourceLocation resourceLocation, FluidOutput output, Condition condition){
+
+        if(DEBUG_MODE_PRINTLN || true) {
+            CreateWells.LOGGER.info("[CW Recipes] Registering recipe: {}", resourceLocation);
+        }
+
         if(output.amount <= 0 || output.fluid == null){
             CreateWells.LOGGER.error("Something is Wrong with the FLuid Output (speed|amount|fluid) of recipe: " + resourceLocation);
             return null;

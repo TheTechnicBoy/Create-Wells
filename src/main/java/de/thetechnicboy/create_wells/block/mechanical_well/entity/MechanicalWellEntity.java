@@ -7,8 +7,11 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import de.thetechnicboy.create_wells.Config;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
+import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -16,14 +19,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
@@ -41,7 +45,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         //ObservePacket.send(worldPosition, 0);
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        return containedFluidTooltip(tooltip, isPlayerSneaking, this.getCapability(ForgeCapabilities.FLUID_HANDLER));
+        return containedFluidTooltip(tooltip, isPlayerSneaking, getLevel().getCapability(Capabilities.FluidHandler.BLOCK, getBlockPos(), null));
     }
 
     @Override
@@ -52,18 +56,6 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side){
-        if(cap == ForgeCapabilities.FLUID_HANDLER && side != Direction.DOWN && side != Direction.UP) return tank.getCapability().cast();
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap){
-        if(cap == ForgeCapabilities.FLUID_HANDLER) return tank.getCapability().cast();
-        return super.getCapability(cap);
-    }
-
-    @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviour){
         tank = SmartFluidTankBehaviour.single(this, tankCapacity);
         tank.getPrimaryHandler().setValidator(fluid -> {return true;});
@@ -71,16 +63,19 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         super.addBehaviours(behaviour);
     }
 
+    /*
     @Override
-    public void read(CompoundTag compoundTag, boolean clientPacket){
-        super.read(compoundTag, clientPacket);
-        tank.read(compoundTag, clientPacket);
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tank.write(tag, registries, false);
     }
+
     @Override
-    public void write(CompoundTag compoundTag, boolean clientPacket){
-        super.write(compoundTag, clientPacket);
-        tank.write(compoundTag, clientPacket);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        tank.read(tag, registries, false);
     }
+     */
 
     private int tickCounter = 0;
     private FluidExtractionRecipe.FluidOutput cachedFluidOutput;
@@ -129,13 +124,15 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         List<FluidExtractionRecipe> _Recipes = new ArrayList<>();
         FluidExtractionRecipe.FluidOutput OUTPUT = new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0);
 
-        level.getRecipeManager().getRecipes().forEach(recipe -> {
-            if(recipe instanceof FluidExtractionRecipe) _AllRecipes.add( (FluidExtractionRecipe) recipe);
-        });
+        level.getRecipeManager().getAllRecipesFor(AllRecipeTypes.FLUID_EXTRACTION_TYPE.get()).forEach(recipe -> {_AllRecipes.add(recipe.value());});
+
 
         for(int i = 0; i < _AllRecipes.size(); i++){
             FluidExtractionRecipe recipe    = _AllRecipes.get(i);
-            if(checkConditions(recipe.getCondition())) _Recipes.add(recipe);
+            if(checkConditions(recipe.getCondition())) {
+                _Recipes.add(recipe);
+                System.out.println("RECIPE OUT: " + recipe.getId());
+            }
         };
 
         if(!_Recipes.isEmpty()) OUTPUT = _Recipes.get(0).getOutput();
@@ -157,10 +154,18 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         if(!conditions.isBlockTag() && conditions.getBlock() != null && !conditions.getBlock().equals(getBelowBlock())) Success = false;
 
         if(conditions.isBlockTag() && conditions.getBlock() != null){
-            List<Block> blocks = ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, conditions.getBlock())).stream().toList();
-            Block block = ForgeRegistries.BLOCKS.getValue(getBelowBlock());
+            Optional<? extends HolderSet.Named<Block>> tagOptional =
+                    BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, conditions.getBlock()));
+            if(tagOptional.isPresent()) {
+                List<Block> blocks = tagOptional.get().stream()
+                        .map(holder -> holder.value())
+                        .toList();
+                Block block = BuiltInRegistries.BLOCK.get(getBelowBlock());
 
-            if(!blocks.contains(block)) Success = false;
+                if(!blocks.contains(block)) Success = false;
+            } else {
+                Success = false;
+            }
         }
 
         if(Math.abs(getSpeed()) < conditions.getRPM() && conditions.getRPM() != -255) Success = false;
@@ -174,7 +179,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     public boolean isUpsideDown(){
         return this.getBlockState().getValue(MechanicalWellBlock.UPSIDE_DOWN);
     }
-    public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).get()); }
+    public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).value()); }
     public int getYPos(){ return this.getBlockPos().getY() ;}
     public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
     public ResourceLocation getBelowBlock() {
@@ -186,14 +191,14 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     public SmartFluidTankBehaviour getTank(){return tank;}
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
         FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
-        handleUpdateTag(pkt.getTag());
+        handleUpdateTag(pkt.getTag(), lookupProvider);
         FluidStack newFluid = tank.getPrimaryHandler().getFluid();
 
          boolean wasEmpty = newFluid != null && oldFluid == null;

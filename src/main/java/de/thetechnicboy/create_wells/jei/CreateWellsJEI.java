@@ -33,7 +33,7 @@ public class CreateWellsJEI implements IModPlugin {
         allCategories.clear();
 
         CreateRecipeCategory<?> fluid_extraction = new CreateRecipeCategory.Builder(FluidExtractionRecipe.class)
-                .addTypedRecipes(() -> AllRecipeTypes.FLUID_EXTRACTION_TYPE)
+                .addTypedRecipes(() -> AllRecipeTypes.FLUID_EXTRACTION_TYPE.get())
                 .catalyst(ModBlocks.BLACK_MECHANICAL_WELL::get)
                 .catalyst(ModBlocks.BLUE_MECHANICAL_WELL::get)
                 .catalyst(ModBlocks.BROWN_MECHANICAL_WELL::get)

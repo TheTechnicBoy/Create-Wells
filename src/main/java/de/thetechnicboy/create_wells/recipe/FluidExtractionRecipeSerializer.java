@@ -11,6 +11,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+import java.util.ArrayList;
+
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {
     @Override
     public MapCodec<FluidExtractionRecipe> codec() {
@@ -18,7 +20,7 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 FluidExtractionRecipe.FluidOutput.CODEC.fieldOf("output").forGetter(FluidExtractionRecipe::getOutput),
                 FluidExtractionRecipe.Condition.CODEC.fieldOf("condition").forGetter(FluidExtractionRecipe::getCondition)
-        ).apply(instance, (output, condition) -> FluidExtractionRecipe.registerRecipe(CreateWells.genRL("test"), output, condition)));
+        ).apply(instance, (output, condition) -> FluidExtractionRecipe.registerRecipe(output, condition)));
     }
 
 
@@ -28,17 +30,15 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
         return new StreamCodec<>() {
             @Override
             public void encode(RegistryFriendlyByteBuf buf, FluidExtractionRecipe recipe) {
-                buf.writeResourceLocation(recipe.getId());
                 recipe.getOutput().writeToPacket(buf);
                 recipe.getCondition().writeToPacket(buf);
             }
 
             @Override
             public FluidExtractionRecipe decode(RegistryFriendlyByteBuf buf) {
-                ResourceLocation id = buf.readResourceLocation();
                 FluidExtractionRecipe.FluidOutput output = FluidExtractionRecipe.FluidOutput.fromPacket(buf);
                 FluidExtractionRecipe.Condition condition = FluidExtractionRecipe.Condition.fromPacket(buf);
-                return FluidExtractionRecipe.registerRecipe(id, output, condition);
+                return FluidExtractionRecipe.registerRecipe(output, condition);
             }
         };
     }

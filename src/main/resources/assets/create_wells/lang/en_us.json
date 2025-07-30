@@ -15,10 +15,11 @@
   "block.create_wells.red_mechanical_well": "Red Mechanical Well",
   "block.create_wells.white_mechanical_well": "White Mechanical Well",
   "block.create_wells.yellow_mechanical_well": "Yellow Mechanical Well",
-
   "block.create_wells.cow_catalyst": "Cow Catalyst",
 
   "itemGroup.create_wells": "Create Wells",
+
+  "create_wells.recipe.fluid_extraction" : "Fluid Extraction",
 
   "create_wells.ponder.tag.mechanical_well" : "Create Wells",
   "create_wells.ponder.tag.mechanical_well.description": "Wells using Create Kinetics",

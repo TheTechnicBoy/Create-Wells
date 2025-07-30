@@ -2,6 +2,7 @@ package de.thetechnicboy.create_wells.jei;
 
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
+import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.jei.animations.AnimatedMechanicalWell;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

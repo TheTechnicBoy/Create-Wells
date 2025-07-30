@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import de.thetechnicboy.create_wells.Config;
+import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
@@ -126,12 +127,10 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         level.getRecipeManager().getAllRecipesFor(AllRecipeTypes.FLUID_EXTRACTION_TYPE.get()).forEach(recipe -> {_AllRecipes.add(recipe.value());});
 
-
         for(int i = 0; i < _AllRecipes.size(); i++){
             FluidExtractionRecipe recipe    = _AllRecipes.get(i);
             if(checkConditions(recipe.getCondition())) {
                 _Recipes.add(recipe);
-                System.out.println("RECIPE OUT: " + recipe.getId());
             }
         };
 

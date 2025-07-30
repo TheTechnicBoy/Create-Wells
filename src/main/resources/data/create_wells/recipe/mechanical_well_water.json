@@ -6,7 +6,7 @@
     "dimension": ["minecraft:overworld"],
     "yMin": -255,
     "yMax": -255,
-    "block": "#forge:stone",
+    "block": "#c:stones",
     "nbt": "",
     "rpm": 64
   },

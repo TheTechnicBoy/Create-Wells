@@ -35,7 +35,7 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
 
         if (!fluid.isEmpty()) {
-            renderFluid(fluid, well, poseStack, bufferSource, packedLight);
+            renderFluid(fluid, well, poseStack, bufferSource, packedLight, packedOverlay);
         }
 
         renderShaft(well, poseStack, bufferSource, packedLight);
@@ -46,7 +46,7 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         return true;
     }
 
-    private void renderFluid(FluidStack fluid, MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    private void renderFluid(FluidStack fluid, MechanicalWellEntity well, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         int amount = fluid.getAmount();
         int capacity = MechanicalWellEntity.tankCapacity;
         boolean upsideDown = well.isUpsideDown();
@@ -55,19 +55,12 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         BlockPos pos = well.getBlockPos();
 
         FluidType fluidType = fluid.getFluid().getFluidType();
-        IClientFluidTypeExtensions fluidEx = IClientFluidTypeExtensions.of(fluidType.getStateForPlacement(level, pos, fluid));
+        IClientFluidTypeExtensions fluidEx = IClientFluidTypeExtensions.of(fluidType);
 
-        // Verbessertes Texture-Handling für Create Fluids
         ResourceLocation stillTexture = fluidEx.getStillTexture(fluid);
-        
-        // Fallback für Create Fluids
+
         if (stillTexture == null) {
             stillTexture = fluidEx.getStillTexture();
-        }
-        
-        // Weitere Fallbacks
-        if (stillTexture == null) {
-            stillTexture = ResourceLocation.tryBuild("minecraft", "block/water_still");
         }
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -78,10 +71,18 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         float corner = 3F / 16F;
         float height = MechanicalWellBlock.getFluidRenderHeight(amount, capacity, upsideDown);
 
-        float minU = sprite.getU(3);
-        float maxU = sprite.getU(13);
-        float minV = sprite.getV(3);
-        float maxV = sprite.getV(13);
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
+
+        float uvWidth = maxU - minU;
+        float uvHeight = maxV - minV;
+
+        float uvStartX = minU + (uvWidth * 3f / 16f);
+        float uvEndX = minU + (uvWidth * 13f / 16f);
+        float uvStartY = minV + (uvHeight * 3f / 16f);
+        float uvEndY = minV + (uvHeight * 13f / 16f);
 
         VertexConsumer builder = bufferSource.getBuffer(RenderType.translucent());
         Matrix4f matrix = poseStack.last().pose();
@@ -89,27 +90,72 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         int alpha = (color >> 24) & 0xFF;
         if (alpha == 0) {
             alpha = 255;
-            color = (color & 0xFFFFFF) | (alpha << 24);
         }
 
+        int rgb = color & 0xFFFFFF;
+        if (rgb == 0) {
+            rgb = 0xFFFFFF;
+        }
+
+        color = (alpha << 24) | rgb;
+
+        int adjustedLight = 0xF000F0;
+
         if (upsideDown) {
-            builder.addVertex(matrix, 1 - corner, height, corner).setColor(color).setUv(maxU, minV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
-            builder.addVertex(matrix, 1 - corner, height, 1 - corner).setColor(color).setUv(maxU, maxV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
-            builder.addVertex(matrix, corner, height, 1 - corner).setColor(color).setUv(minU, maxV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
-            builder.addVertex(matrix, corner, height, corner).setColor(color).setUv(minU, minV).setUv2(packedLight, packedLight).setNormal(0, -1, 0);
+            builder.addVertex(matrix, 1 - corner, height, corner)
+                    .setColor(color)
+                    .setUv(uvEndX, uvStartY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, -1, 0);
+            builder.addVertex(matrix, 1 - corner, height, 1 - corner)
+                    .setColor(color)
+                    .setUv(uvEndX, uvEndY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, -1, 0);
+            builder.addVertex(matrix, corner, height, 1 - corner)
+                    .setColor(color)
+                    .setUv(uvStartX, uvEndY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, -1, 0);
+            builder.addVertex(matrix, corner, height, corner)
+                    .setColor(color)
+                    .setUv(uvStartX, uvStartY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, -1, 0);
         } else {
-            builder.addVertex(matrix, corner, height, corner).setColor(color).setUv(minU, minV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
-            builder.addVertex(matrix, corner, height, 1 - corner).setColor(color).setUv(minU, maxV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
-            builder.addVertex(matrix, 1 - corner, height, 1 - corner).setColor(color).setUv(maxU, maxV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
-            builder.addVertex(matrix, 1 - corner, height, corner).setColor(color).setUv(maxU, minV).setUv2(packedLight, packedLight).setNormal(0, 1, 0);
+            builder.addVertex(matrix, corner, height, corner)
+                    .setColor(color)
+                    .setUv(uvStartX, uvStartY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, 1, 0);
+            builder.addVertex(matrix, corner, height, 1 - corner)
+                    .setColor(color)
+                    .setUv(uvStartX, uvEndY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, 1, 0);
+            builder.addVertex(matrix, 1 - corner, height, 1 - corner)
+                    .setColor(color)
+                    .setUv(uvEndX, uvEndY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, 1, 0);
+            builder.addVertex(matrix, 1 - corner, height, corner)
+                    .setColor(color)
+                    .setUv(uvEndX, uvStartY)
+                    .setUv2(adjustedLight, packedOverlay)
+                    .setNormal(0, 1, 0);
         }
     }
 
     private int getFluidColor(IClientFluidTypeExtensions fluidEx, FluidType fluidType, FluidStack fluid, Level level, BlockPos pos) {
         try {
+            net.minecraft.world.level.material.FluidState fluidState = fluidType.getStateForPlacement(level, pos, fluid);
 
-            int color = fluidEx.getTintColor(fluidType.getStateForPlacement(level, pos, fluid), level, pos);
+            int color = fluidEx.getTintColor(fluidState, level, pos);
+            if (color != 0 && (color & 0xFFFFFF) != 0) {
+                return color;
+            }
 
+            color = fluidEx.getTintColor(fluid);
             if (color != 0 && (color & 0xFFFFFF) != 0) {
                 return color;
             }
@@ -119,12 +165,10 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
                 return color;
             }
 
-            color = fluidEx.getTintColor(fluid);
-            if (color != 0 && (color & 0xFFFFFF) != 0) {
-                return color;
-            }
-            
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.err.println("Error getting fluid color: " + e.getMessage());
+        }
+
         return 0xFFFFFFFF;
     }
 

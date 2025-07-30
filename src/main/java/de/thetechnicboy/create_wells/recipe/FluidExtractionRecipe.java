@@ -23,7 +23,6 @@ import java.util.List;
 public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
     private static final boolean DEBUG_MODE_PRINTLN = true;
-    private final ResourceLocation id;
     private final FluidOutput output;
     private final Condition condition;
 
@@ -34,15 +33,12 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
         return output;
     }
 
-    private FluidExtractionRecipe(ResourceLocation id, FluidOutput output, Condition condition) {
-        this.id = id;
+    private FluidExtractionRecipe(FluidOutput output, Condition condition) {
         this.output = output;
         this.condition = condition;
 
         if(DEBUG_MODE_PRINTLN) {
             System.out.println("---------------");
-            System.out.println("[CW Recipes] " + id.toString());
-
             System.out.println("[CW Recipes] FLUID:");
             System.out.println("[CW Recipes]    " + output.fluid);
             System.out.println("[CW Recipes]    " + output.amount + " mb/tick");
@@ -55,7 +51,7 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             for (ResourceLocation biome : condition.biome) System.out.println("          " + biome.toString());
             System.out.println("[CW Recipes]     DIMENSIONS:");
             for (ResourceLocation dimension : condition.dimension) System.out.println("          " + dimension.toString());
-            System.out.println("[CW Recipes]     Block: " + (condition.BlockTag ? "#" : "") + condition.block);
+            System.out.println("[CW Recipes]     Block: " + condition.block);
             System.out.println("[CW Recipes]     NBT: " + condition.nbt);
             System.out.println("[CW Recipes]     RPM: " + condition.rpm);
             System.out.println("---------------");
@@ -83,11 +79,6 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
     }
 
 
-
-    public ResourceLocation getId() {
-        return id;
-    }
-
     @Override
     public RecipeSerializer<?> getSerializer() {
         return AllRecipeTypes.FLUID_EXTRACTION_SERIALIZER.get();
@@ -99,38 +90,39 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
     }
 
 
-    public static FluidExtractionRecipe registerRecipe(ResourceLocation resourceLocation, FluidOutput output, Condition condition){
+    public static FluidExtractionRecipe registerRecipe(FluidOutput output, Condition condition){
 
-        if(DEBUG_MODE_PRINTLN || true) {
-            CreateWells.LOGGER.info("[CW Recipes] Registering recipe: {}", resourceLocation);
-        }
 
         if(output.amount <= 0 || output.fluid == null){
-            CreateWells.LOGGER.error("Something is Wrong with the FLuid Output (speed|amount|fluid) of recipe: " + resourceLocation);
+            CreateWells.LOGGER.error("Something is Wrong with the FLuid Output (speed|amount|fluid) of a recipe");
             return null;
         }
 
         if((condition.yMin > condition.yMax && condition.yMin > -255 && condition.yMax > -255) || (condition.yMin > 511 || condition.yMax > 511)){
-            CreateWells.LOGGER.error("Something is Wrong with the yMin and yMax in the condition of recipe: " + resourceLocation);
+            CreateWells.LOGGER.error("Something is Wrong with the yMin and yMax in the condition of a recipe");
             return null;
         }
 
         if(condition.direction == Direction.ERROR){
-            CreateWells.LOGGER.error("Something is Wrong with the Direction in the condition of recipe: " + resourceLocation);
+            CreateWells.LOGGER.error("Something is Wrong with the Direction in the condition of a recipe");
             return null;
         }
 
-        if(!condition.BlockTag && condition.block != null){
+        if(!condition.isBlockTag() && condition.getBlock() != null){
             Block block = BuiltInRegistries.BLOCK.get(condition.getBlock());
-            if(block.equals(Blocks.AIR)) return null;
+            if(block.equals(Blocks.AIR)){
+                CreateWells.LOGGER.error("Something is Wrong with the Block in the condition of a recipe");
+                return null;
+            }
         }
 
         if(condition.rpm < 0  || condition.rpm > 256){
-            CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of recipe: " + resourceLocation);
+            CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of a recipe");
             return null;
         }
 
-        return new FluidExtractionRecipe(resourceLocation, output, condition);
+        System.out.println("Before New");
+        return new FluidExtractionRecipe(output, condition);
     }
 
 
@@ -157,16 +149,6 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             this.amount = amount;
         }
 
-        public static FluidOutput fromJSON(com.google.gson.JsonObject jsonObject){
-            Fluid fluid = null;
-            int amount = 0;
-
-            try { fluid = BuiltInRegistries.FLUID.get(CreateWells.parseRL(jsonObject.get("fluid").getAsString())); } catch (Exception ignored) {};
-            try { amount = jsonObject.get("amount").getAsInt(); } catch (Exception ignored) {};
-
-            return new FluidOutput(fluid, amount);
-        }
-
         public static FluidOutput fromPacket(FriendlyByteBuf buf) {
             Fluid fluid = BuiltInRegistries.FLUID.get(buf.readResourceLocation());
             int amount = buf.readInt();
@@ -185,21 +167,19 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
         private final List<ResourceLocation> dimension;
         private final int yMin;
         private final int yMax;
-        private final ResourceLocation block;
-        private final boolean BlockTag;
+        private final String block;
         private final String nbt;
         private final int rpm;
 
         public static final Codec<Condition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Direction.CODEC.fieldOf("direction").forGetter(Condition::getDirection),
-                Codec.list(ResourceLocation.CODEC).fieldOf("biome").forGetter(Condition::getBiome),
-                Codec.list(ResourceLocation.CODEC).fieldOf("dimension").forGetter(Condition::getDimension),
-                Codec.INT.fieldOf("yMin").forGetter(Condition::getYMin),
-                Codec.INT.fieldOf("yMax").forGetter(Condition::getYMax),
-                ResourceLocation.CODEC.fieldOf("block").forGetter(Condition::getBlock),
-                Codec.BOOL.fieldOf("blockTag").forGetter(Condition::isBlockTag),
-                Codec.STRING.fieldOf("nbt").forGetter(Condition::getNbt),
-                Codec.INT.fieldOf("rpm").forGetter(Condition::getRPM)
+                Direction.CODEC.optionalFieldOf("direction", Direction.BOTH).forGetter(Condition::getDirection),
+                Codec.list(ResourceLocation.CODEC).optionalFieldOf("biome", new ArrayList<>()).forGetter(Condition::getBiome),
+                Codec.list(ResourceLocation.CODEC).optionalFieldOf("dimension", new ArrayList<>()).forGetter(Condition::getDimension),
+                Codec.INT.optionalFieldOf("yMin", -255).forGetter(Condition::getYMin),
+                Codec.INT.optionalFieldOf("yMax", -255).forGetter(Condition::getYMax),
+                Codec.STRING.optionalFieldOf("block", "").forGetter((c) -> c.block),
+                Codec.STRING.optionalFieldOf("nbt", "[]").forGetter(Condition::getNbt),
+                Codec.INT.optionalFieldOf("rpm", 0).forGetter(Condition::getRPM)
         ).apply(instance, Condition::new));
 
 
@@ -219,82 +199,29 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             return yMax;
         }
         public ResourceLocation getBlock() {
-            return block;
+            if(block.isEmpty()) return null;
+            if(this.isBlockTag()) return CreateWells.parseRL(block.substring(1));
+            return CreateWells.parseRL(block);
         }
         public boolean isBlockTag() {
-            return BlockTag;
+            return block.startsWith("#");
         }
         public String getNbt() {return nbt;}
         public int getRPM() {
             return rpm;
         }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag, String nbt, int rpm) {
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, String block, String nbt, int rpm) {
+            System.out.println("new Condition");
+
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
             this.yMin = yMin;
             this.yMax = yMax;
-            this.block = block;
-            this.BlockTag = BlockTag;
             this.nbt = nbt;
             this.rpm = rpm;
-        }
-
-        public static Condition fromJSON(com.google.gson.JsonObject jsonObject) {
-            String _direction = null;
-            List<ResourceLocation> dimensions = new ArrayList<>();
-            List<ResourceLocation> biomes = new ArrayList<>();
-            int yMin = -255;
-            int yMax = -255;
-            ResourceLocation block = null;
-            String nbt = "[]";
-            boolean blockTag = false;
-            int rpm = 0;
-
-            try{ _direction = jsonObject.get("direction").getAsString(); } catch (Exception ignored) {}
-            Direction direction;
-            if(_direction == null) direction = Direction.NORMAL;
-            else if(_direction.equalsIgnoreCase("NORMAL")) direction = Direction.NORMAL;
-            else if(_direction.equalsIgnoreCase("BOTH")) direction = Direction.BOTH;
-            else if(_direction.equalsIgnoreCase("UPSIDE_DOWN")) direction = Direction.UPSIDE_DOWN;
-            else direction = Direction.ERROR;
-
-            try{
-                com.google.gson.JsonArray biomesArray = jsonObject.getAsJsonArray("biome");
-                for (int i = 0; i < biomesArray.size(); i++) {
-                    biomes.add(CreateWells.parseRL(biomesArray.get(i).getAsString()));
-                }
-            } catch (Exception ignored) {}
-
-            try{
-                com.google.gson.JsonArray dimensionArray = jsonObject.getAsJsonArray("dimension");
-                for (int i = 0; i < dimensionArray.size(); i++) {
-                    dimensions.add(CreateWells.parseRL(dimensionArray.get(i).getAsString()));
-                }
-            } catch (Exception ignored) {}
-
-            try{
-                blockTag = jsonObject.get("block").getAsString().startsWith("#");
-                if(blockTag) block = CreateWells.parseRL(jsonObject.get("block").getAsString().split("#")[1]);
-                else block = CreateWells.parseRL(jsonObject.get("block").getAsString());
-            } catch (Exception ignored) {}
-
-            try{
-                if(!blockTag){
-                    String tempNbt = jsonObject.get("nbt").getAsString();
-                    if(tempNbt.startsWith("[") && tempNbt.endsWith("]")){
-                        nbt = tempNbt;
-                    }
-                }
-            }catch(Exception ignored) {}
-
-            try{ yMin = jsonObject.get("yMin").getAsInt(); } catch (Exception ignored) {}
-            try{ yMax = jsonObject.get("yMax").getAsInt(); } catch (Exception ignored) {}
-
-            try{ rpm = jsonObject.get("rpm").getAsInt(); } catch (Exception ignored) {}
-
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, nbt, rpm);
+            this.block = block;
         }
 
         public static Condition fromPacket(FriendlyByteBuf buf) {
@@ -320,13 +247,12 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             int yMin = buf.readInt();
             int yMax = buf.readInt();
 
-            ResourceLocation block = buf.readResourceLocation();
-            boolean blockTag = buf.readBoolean();
+            String block = buf.readUtf();
             String nbt = buf.readUtf();
 
             int rpm = buf.readInt();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, nbt, rpm);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, nbt, rpm);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -347,8 +273,7 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             buf.writeInt(this.yMin);
             buf.writeInt(this.yMax);
 
-            buf.writeResourceLocation(this.block);
-            buf.writeBoolean(this.BlockTag);
+            buf.writeUtf(this.block);
             buf.writeUtf(this.nbt);
 
             buf.writeInt(this.rpm);

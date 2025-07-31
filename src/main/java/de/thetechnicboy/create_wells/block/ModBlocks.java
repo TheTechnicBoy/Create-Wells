@@ -7,6 +7,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -20,6 +23,26 @@ public class ModBlocks {
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
         BLOCK_ENTITIES.register(eventBus);
+    }
+
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BLACK_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BLUE_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BROWN_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CYAN_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, GRAY_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, GREEN_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, LIGHT_BLUE_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, LIGHT_GRAY_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, LIME_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MAGENTA_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ORANGE_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PINK_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PURPLE_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, RED_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, WHITE_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, YELLOW_MECHANICAL_WELL_BLOCKENTITY.get(), (be, side) -> be.getCapability(be.getBlockPos(), side));
     }
 
     public static final DeferredHolder<Block, Block> BLACK_MECHANICAL_WELL = BLOCKS.register("black_mechanical_well",

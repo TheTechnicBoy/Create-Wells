@@ -22,7 +22,7 @@ import java.util.List;
 
 public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
-    private static final boolean DEBUG_MODE_PRINTLN = true;
+    private static final boolean DEBUG_MODE_PRINTLN = false;
     private final FluidOutput output;
     private final Condition condition;
 
@@ -121,7 +121,6 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             return null;
         }
 
-        System.out.println("Before New");
         return new FluidExtractionRecipe(output, condition);
     }
 
@@ -212,8 +211,6 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
         }
 
         public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, String block, String nbt, int rpm) {
-            System.out.println("new Condition");
-
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;

@@ -10,6 +10,7 @@ import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,13 +25,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation {
+public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation, ICapabilityProvider<BlockPos, Direction, IFluidHandler> {
 
     public static int tankCapacity = Config.MECHANICAL_WELL_CAPACITY.get();
     private boolean initialized;
@@ -62,6 +66,14 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         tank.getPrimaryHandler().setValidator(fluid -> {return true;});
         behaviour.add(tank);
         super.addBehaviours(behaviour);
+    }
+
+    @Override
+    public @Nullable IFluidHandler getCapability(BlockPos pos, Direction side) {
+        if (tank != null) {
+            return tank.getPrimaryHandler();
+        }
+        return null;
     }
 
     /*

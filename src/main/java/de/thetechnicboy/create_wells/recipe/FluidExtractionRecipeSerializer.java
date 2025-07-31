@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {
     @Override
     public MapCodec<FluidExtractionRecipe> codec() {
-        System.out.println("codec() wurde aufgerufen!");
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 FluidExtractionRecipe.FluidOutput.CODEC.fieldOf("output").forGetter(FluidExtractionRecipe::getOutput),
                 FluidExtractionRecipe.Condition.CODEC.fieldOf("condition").forGetter(FluidExtractionRecipe::getCondition)
@@ -26,7 +25,6 @@ public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidEx
 
     @Override
     public StreamCodec<RegistryFriendlyByteBuf, FluidExtractionRecipe> streamCodec() {
-        System.out.println("CODEC WIRD GESTREAMT");
         return new StreamCodec<>() {
             @Override
             public void encode(RegistryFriendlyByteBuf buf, FluidExtractionRecipe recipe) {

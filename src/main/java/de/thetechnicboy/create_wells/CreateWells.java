@@ -26,7 +26,6 @@ public class CreateWells {
         if (rl == null) {
             throw new IllegalArgumentException("Invalid ResourceLocation key: " + key);
         }
-        System.out.println("Generated RL: " + rl.toString());
         return rl;
     }
     public static ResourceLocation parseRL(String key) { return ResourceLocation.parse(key); }
@@ -37,6 +36,8 @@ public class CreateWells {
         ModItems.register(modEventBus);
         AllRecipeTypes.register(modEventBus);
         ModCreativeTab.register(modEventBus);
+
+        modEventBus.register(ModBlocks.class);
 
         modEventBus.addListener(this::onClientSetup);
 

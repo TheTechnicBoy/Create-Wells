@@ -7,7 +7,7 @@
     "yMin": -255,
     "yMax": -255,
     "block": "#c:stones",
-    "nbt": "",
+    "state": "[]",
     "rpm": 64
   },
   "output": {

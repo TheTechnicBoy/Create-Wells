@@ -11,6 +11,7 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.createmod.catnip.animation.AnimationTickHolder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
@@ -27,6 +28,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Style;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,6 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
 
     public FluidExtractionCategory(Info<FluidExtractionRecipe> info) {
         super(info);
-        System.out.println("FLUID Extraction Category");
     }
 
     @Override
@@ -62,7 +64,10 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
                 builder
                         .addSlot(RecipeIngredientRole.INPUT, 3, getBackground().getHeight() / 2 - 7)
                         .setBackground(getRenderedSlot(), -1, -1)
-                        .addItemStack(BuiltInRegistries.BLOCK.get(recipe.getCondition().getBlock()).getCloneItemStack(null, null, null, null, null));
+                        .addItemStack(BuiltInRegistries.BLOCK.get(recipe.getCondition().getBlock()).getCloneItemStack(null, null, null, null, null))
+                        .addRichTooltipCallback((view, tooltipBuilder) -> {
+                            if(!recipe.getCondition().getState().equals("[]")) tooltipBuilder.add(Component.literal(recipe.getCondition().getState()).withStyle(ChatFormatting.DARK_PURPLE));
+                        });
             }
         }
 
@@ -103,7 +108,7 @@ public class FluidExtractionCategory extends CreateRecipeCategory<FluidExtractio
         else graphics.drawString(Minecraft.getInstance().font , "  Not Important"  ,getBackground().getWidth() / 2 + 2, getBackground().getHeight() / 2 + 33, Color, false);
 
         AnimatedMechanicalWell well;
-        if(recipe.getCondition().getBlock() != null) well = new AnimatedMechanicalWell(recipe.getCondition().getDirection(), recipe.getCondition().getBlock(), recipe.getCondition().isBlockTag());
+        if(recipe.getCondition().getBlock() != null) well = new AnimatedMechanicalWell(recipe.getCondition().getDirection(), recipe.getCondition().getBlock(), recipe.getCondition().isBlockTag(), recipe.getCondition().requiredProperties());
         else well = new AnimatedMechanicalWell(recipe.getCondition().getDirection());
         well.draw(graphics, getBackground().getWidth() / 2 - 29, 22);
 

@@ -1,5 +1,8 @@
 package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -30,9 +33,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation, ICapabilityProvider<BlockPos, Direction, IFluidHandler> {
 
@@ -151,18 +152,21 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     }
 
     private boolean checkConditions(FluidExtractionRecipe.Condition conditions) {
-        boolean Success = true;
+        if(getYPos() < conditions.getYMin() && conditions.getYMin() != -255) return false;
+        if(getYPos() > conditions.getYMax() && conditions.getYMax() != -255) return false;
 
-        if(getYPos() < conditions.getYMin() && conditions.getYMin() != -255) Success = false;
-        if(getYPos() > conditions.getYMax() && conditions.getYMax() != -255) Success = false;
+        if(conditions.getDirection() == FluidExtractionRecipe.Direction.NORMAL && isUpsideDown()) return false;
+        if(conditions.getDirection() == FluidExtractionRecipe.Direction.UPSIDE_DOWN && !isUpsideDown()) return false;
 
-        if(conditions.getDirection() == FluidExtractionRecipe.Direction.NORMAL && isUpsideDown()) Success = false;
-        if(conditions.getDirection() == FluidExtractionRecipe.Direction.UPSIDE_DOWN && !isUpsideDown()) Success = false;
+        if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(getDimension())) return false;
+        if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(getBiome())) return false;
 
-        if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(getDimension())) Success = false;
-        if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(getBiome())) Success = false;
 
-        if(!conditions.isBlockTag() && conditions.getBlock() != null && !conditions.getBlock().equals(getBelowBlock())) Success = false;
+        BlockState blockBelowState = getBelowBlock();
+        Block blockBelow = blockBelowState.getBlock();
+        ResourceLocation blockBelowRes = this.getLevel().registryAccess().registryOrThrow(Registries.BLOCK).getKey(blockBelow);
+
+        if(!conditions.isBlockTag() && conditions.getBlock() != null && !conditions.getBlock().equals(blockBelowRes)) return false;
 
         if(conditions.isBlockTag() && conditions.getBlock() != null){
             Optional<? extends HolderSet.Named<Block>> tagOptional =
@@ -171,19 +175,45 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
                 List<Block> blocks = tagOptional.get().stream()
                         .map(holder -> holder.value())
                         .toList();
-                Block block = BuiltInRegistries.BLOCK.get(getBelowBlock());
+                Block block = BuiltInRegistries.BLOCK.get(blockBelowRes);
 
-                if(!blocks.contains(block)) Success = false;
+                if(!blocks.contains(block))  return false;
             } else {
-                Success = false;
+                return false;
             }
         }
 
-        if(Math.abs(getSpeed()) < conditions.getRPM() && conditions.getRPM() != -255) Success = false;
+        if(Math.abs(getSpeed()) < conditions.getRPM() && conditions.getRPM() != -255) return false;
 
-        //TODO CHECK NBT
+        Map<String, String> requiredProperties = conditions.requiredProperties();
 
-        return Success;
+        for (Map.Entry<String, String> requiredProperty : requiredProperties.entrySet()) {
+            String propertyName = requiredProperty.getKey();
+            String requiredValue = requiredProperty.getValue();
+
+            boolean propertyFound = false;
+            boolean valueMatches = false;
+
+            for (var property : blockBelowState.getProperties()) {
+                if (property.getName().equals(propertyName)) {
+                    propertyFound = true;
+                    String actualValue = blockBelowState.getValue(property).toString();
+                    valueMatches = actualValue.equals(requiredValue);
+
+                    break;
+                }
+            }
+
+            if (!propertyFound) {
+                return false;
+            }
+
+            if (!valueMatches) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -193,11 +223,11 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).value()); }
     public int getYPos(){ return this.getBlockPos().getY() ;}
     public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
-    public ResourceLocation getBelowBlock() {
+    public BlockState getBelowBlock() {
         BlockPos otherPos = this.getBlockPos().below(isUpsideDown() ? -1 : 1);
-        Block block = level.getBlockState(otherPos).getBlock();
-        return this.getLevel().registryAccess().registryOrThrow(Registries.BLOCK).getKey(block);
+        return level.getBlockState(otherPos);
     }
+
 
     public SmartFluidTankBehaviour getTank(){return tank;}
 

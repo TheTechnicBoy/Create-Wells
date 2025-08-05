@@ -17,7 +17,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
@@ -52,7 +54,7 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             System.out.println("[CW Recipes]     DIMENSIONS:");
             for (ResourceLocation dimension : condition.dimension) System.out.println("          " + dimension.toString());
             System.out.println("[CW Recipes]     Block: " + condition.block);
-            System.out.println("[CW Recipes]     NBT: " + condition.nbt);
+            System.out.println("[CW Recipes]     STATE: " + condition.state);
             System.out.println("[CW Recipes]     RPM: " + condition.rpm);
             System.out.println("---------------");
         }
@@ -94,24 +96,24 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
 
 
         if(output.amount <= 0 || output.fluid == null){
-            CreateWells.LOGGER.error("Something is Wrong with the FLuid Output (speed|amount|fluid) of a recipe");
+            CreateWells.LOGGER.error("Something is Wrong with the FLUID Output (speed|amount|fluid) of a recipe");
             return null;
         }
 
         if((condition.yMin > condition.yMax && condition.yMin > -255 && condition.yMax > -255) || (condition.yMin > 511 || condition.yMax > 511)){
-            CreateWells.LOGGER.error("Something is Wrong with the yMin and yMax in the condition of a recipe");
+            CreateWells.LOGGER.error("Something is Wrong with the HEIGHT in the condition of a recipe");
             return null;
         }
 
         if(condition.direction == Direction.ERROR){
-            CreateWells.LOGGER.error("Something is Wrong with the Direction in the condition of a recipe");
+            CreateWells.LOGGER.error("Something is Wrong with the DIRECTION in the condition of a recipe");
             return null;
         }
 
         if(!condition.isBlockTag() && condition.getBlock() != null){
             Block block = BuiltInRegistries.BLOCK.get(condition.getBlock());
             if(block.equals(Blocks.AIR)){
-                CreateWells.LOGGER.error("Something is Wrong with the Block in the condition of a recipe");
+                CreateWells.LOGGER.error("Something is Wrong with the BLOCK in the condition of a recipe");
                 return null;
             }
         }
@@ -120,6 +122,17 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             CreateWells.LOGGER.error("Something is Wrong with the RPM in the condition of a recipe");
             return null;
         }
+
+        if(!condition.getState().startsWith("[") || !condition.getState().endsWith("]")){
+            CreateWells.LOGGER.error("Something is Wrong with the STATE in the condition of a recipe");
+            return null;
+        }
+
+        if(condition.isBlockTag() && !(condition.getState().replaceAll(" ", "").equals("[]"))){
+            CreateWells.LOGGER.error("STATE and BLOCK-TAG cannot be used together!");
+            return null;
+        }
+
 
         return new FluidExtractionRecipe(output, condition);
     }
@@ -167,7 +180,7 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
         private final int yMin;
         private final int yMax;
         private final String block;
-        private final String nbt;
+        private final String state;
         private final int rpm;
 
         public static final Codec<Condition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -177,7 +190,7 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
                 Codec.INT.optionalFieldOf("yMin", -255).forGetter(Condition::getYMin),
                 Codec.INT.optionalFieldOf("yMax", -255).forGetter(Condition::getYMax),
                 Codec.STRING.optionalFieldOf("block", "").forGetter((c) -> c.block),
-                Codec.STRING.optionalFieldOf("nbt", "[]").forGetter(Condition::getNbt),
+                Codec.STRING.optionalFieldOf("state", "[]").forGetter(Condition::getState),
                 Codec.INT.optionalFieldOf("rpm", 0).forGetter(Condition::getRPM)
         ).apply(instance, Condition::new));
 
@@ -205,18 +218,18 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
         public boolean isBlockTag() {
             return block.startsWith("#");
         }
-        public String getNbt() {return nbt;}
+        public String getState() {return state;}
         public int getRPM() {
             return rpm;
         }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, String block, String nbt, int rpm) {
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, String block, String state, int rpm) {
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
             this.yMin = yMin;
             this.yMax = yMax;
-            this.nbt = nbt;
+            this.state = state;
             this.rpm = rpm;
             this.block = block;
         }
@@ -245,11 +258,11 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             int yMax = buf.readInt();
 
             String block = buf.readUtf();
-            String nbt = buf.readUtf();
+            String state = buf.readUtf();
 
             int rpm = buf.readInt();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, nbt, rpm);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, state, rpm);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -271,9 +284,32 @@ public class FluidExtractionRecipe implements Recipe<FluidExtractionContainer> {
             buf.writeInt(this.yMax);
 
             buf.writeUtf(this.block);
-            buf.writeUtf(this.nbt);
+            buf.writeUtf(this.state);
 
             buf.writeInt(this.rpm);
+        }
+
+        public Map<String, String> requiredProperties() {
+            Map<String, String> requiredProperties = new HashMap<>();
+            String trimmed = getState().trim();
+            String propertiesString = trimmed.substring(1, trimmed.length() - 1);
+            if(!propertiesString.trim().isEmpty()){
+                String[] pairs = propertiesString.split(",");
+                for (String pair : pairs) {
+                    pair = pair.trim();
+
+                    if (pair.contains("=")) {
+                        String[] parts = pair.split("=", 2);
+                        if (parts.length == 2) {
+                            String key = parts[0].trim();
+                            String value = parts[1].trim();
+                            requiredProperties.put(key, value);
+                        }
+                    }
+                }
+            }
+
+            return requiredProperties;
         }
     }
 

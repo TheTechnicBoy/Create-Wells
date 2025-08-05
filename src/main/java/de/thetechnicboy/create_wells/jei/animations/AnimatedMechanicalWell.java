@@ -16,8 +16,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.Property;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -27,17 +32,21 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
     private final FluidExtractionRecipe.Direction direction;
     private final boolean blockTag;
     private final List<Block> blocks;
+    private final Map<String, String> state;
+
     public AnimatedMechanicalWell(FluidExtractionRecipe.Direction direction) {
         this.direction = direction;
         this.block = null;
         this.blockTag = false;
         this.blocks = null;
+        this.state = new HashMap<>();
     }
 
-    public AnimatedMechanicalWell(FluidExtractionRecipe.Direction direction, ResourceLocation  block, boolean blockTag) {
+    public AnimatedMechanicalWell(FluidExtractionRecipe.Direction direction, ResourceLocation  block, boolean blockTag, Map<String, String> state) {
         this.direction = direction;
         this.block = block;
         this.blockTag = blockTag;
+        this.state = state;
 
         Optional<? extends HolderSet.Named<Block>> tagOptional =
                 BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, block));
@@ -62,10 +71,10 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
         if(direction != FluidExtractionRecipe.Direction.BOTH) _Direction = direction;
         else _Direction = getDirectionSwapper();
 
-        Block _block = getBlock();
+        BlockState _block = getBlock();
 
         if (_block != null) {
-            blockElement(_block.defaultBlockState())
+            blockElement(_block)
                     .atLocal(-1.5, _Direction == FluidExtractionRecipe.Direction.UPSIDE_DOWN ? 0.20 : 2.20, 0)
                     .scale(23)
                     .render(graphics);
@@ -107,14 +116,44 @@ public class AnimatedMechanicalWell extends AnimatedKinetics {
         else return FluidExtractionRecipe.Direction.UPSIDE_DOWN;
     }
 
-    private Block getBlock(){
+    private BlockState getBlock(){
         if(block == null) return null;
-        if(!blockTag)
-            return BuiltInRegistries.BLOCK.get(block);
+        if(!blockTag) {
+            Block _block = BuiltInRegistries.BLOCK.get(block);
+            if (_block == null) return null;
+
+            BlockState blockState = _block.defaultBlockState();
+
+            for (Map.Entry<String, String> requiredProperty : state.entrySet()) {
+                String propertyName = requiredProperty.getKey();
+                String requiredValue = requiredProperty.getValue();
+
+                for (Property<?> property : blockState.getProperties()) {
+                    if (!property.getName().equals(propertyName)) continue;
+
+                    for (Comparable<?> possible : property.getPossibleValues()) {
+                        if (possible.toString().equals(requiredValue)) {
+                            blockState = setPropertyUnchecked(blockState, property, possible);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return blockState;
+        }
         else {
             if(blocks.isEmpty()) return null;
             double cycle = (AnimationTickHolder.getRenderTime() - offset * 8) % (blocks.size() * 20);
-            return blocks.get((int)(cycle / 20));
+            return blocks.get((int)(cycle / 20)).defaultBlockState();
         }
+
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T extends Comparable<T>> BlockState setPropertyUnchecked(BlockState state, Property<?> property, Comparable<?> value) {
+        Property<T> p = (Property<T>) property;
+        T v = (T) value;
+        return state.setValue(p, v);
     }
 }

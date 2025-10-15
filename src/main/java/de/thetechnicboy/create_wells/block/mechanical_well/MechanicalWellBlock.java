@@ -48,7 +48,12 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     );
 
     public MechanicalWellBlock() {
-        super(Properties.of().instrument(NoteBlockInstrument.BASEDRUM).strength(1.5F, 6.0F).requiresCorrectToolForDrops());
+        super(Properties.of()
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .strength(1.5F, 6.0F)
+                .requiresCorrectToolForDrops()
+                .noOcclusion()
+                .isViewBlocking((state, level, pose) -> false));
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(AXIS, Direction.Axis.X)
                 .setValue(HALF, DoubleBlockHalf.LOWER)

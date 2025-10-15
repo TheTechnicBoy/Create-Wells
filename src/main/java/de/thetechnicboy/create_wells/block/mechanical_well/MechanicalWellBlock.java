@@ -29,6 +29,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public static final VoxelShape SHAPE_BASE = Shapes.join(Shapes.block(), Block.box(3.0D, 2.0D, 3.0D, 13.0D, 16.0D, 13.0D), BooleanOp.ONLY_FIRST);
     public static final VoxelShape SHAPE_INNER_SUPPORT = Shapes.or(
@@ -51,33 +52,43 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(AXIS, Direction.Axis.X)
                 .setValue(HALF, DoubleBlockHalf.LOWER)
-                .setValue(UPSIDE_DOWN, false));
+                .setValue(UPSIDE_DOWN, false)
+                .setValue(FACING, Direction.NORTH));
     }
 
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(AXIS, HALF, UPSIDE_DOWN);
+        builder.add(AXIS, HALF, UPSIDE_DOWN, FACING);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Direction.Axis axis = context.getPlayer().isCrouching() ? context.getHorizontalDirection().getClockWise().getAxis()
+        Direction.Axis axis = context.getPlayer().isCrouching()
+                ? context.getHorizontalDirection().getClockWise().getAxis()
                 : context.getHorizontalDirection().getAxis();
+
+        Direction facing = context.getHorizontalDirection().getOpposite();
 
         // regular placement
         if (pos.getY() < level.getMaxBuildHeight() - 1) {
             if (level.getBlockState(pos.above()).canBeReplaced(context)) {
-                return this.defaultBlockState().setValue(AXIS, axis).setValue(UPSIDE_DOWN, false);
+                return this.defaultBlockState()
+                        .setValue(AXIS, axis)
+                        .setValue(UPSIDE_DOWN, false)
+                        .setValue(FACING, facing);
             }
         }
 
         // upside down placement
         if (pos.getY() > level.getMinBuildHeight() + 1) {
             if (level.getBlockState(pos.below()).canBeReplaced(context)) {
-                return this.defaultBlockState().setValue(AXIS, axis).setValue(UPSIDE_DOWN, true);
+                return this.defaultBlockState()
+                        .setValue(AXIS, axis)
+                        .setValue(UPSIDE_DOWN, true)
+                        .setValue(FACING, facing);
             }
         }
 
@@ -126,11 +137,6 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         return PushReaction.IGNORE;
     }
 
-    /*@Override
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
-        return false;
-    }*/
-
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
@@ -169,21 +175,22 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation) {
-        switch (rotation) {
-            case COUNTERCLOCKWISE_90:
-            case CLOCKWISE_90:
-                switch ((Direction.Axis) state.getValue(AXIS)) {
-                    case Z:
-                        return state.setValue(AXIS, Direction.Axis.X);
-                    case X:
-                        return state.setValue(AXIS, Direction.Axis.Z);
-                    default:
-                        return state;
-                }
-            default:
-                return state;
+    public BlockState rotate(BlockState state, Rotation rot) {
+        Direction facing = state.getValue(FACING);
+        Direction rotatedFacing = rot.rotate(facing);
+
+        Direction.Axis axis = state.getValue(AXIS);
+        if (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) {
+            if (axis == Direction.Axis.X) axis = Direction.Axis.Z;
+            else if (axis == Direction.Axis.Z) axis = Direction.Axis.X;
         }
+
+        return state.setValue(FACING, rotatedFacing).setValue(AXIS, axis);
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.setValue(FACING, mirror.mirror(state.getValue(FACING)));
     }
 
     public static VoxelShape flipShapeXZ(VoxelShape shape) {

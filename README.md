@@ -46,6 +46,10 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
     //The Block which the Wells should stand on
     // tags are also supported -> #forge:stones
     "block": "minecraft:dirt",
+    
+
+    //The State of the Block e.g. [lit=true] for redstone lamps
+    "state": "[]",
 
     //The Minimum Spped of the Create Network
     "rpm": 128
@@ -65,7 +69,7 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
 }
 ```
 
-### Examples
+## Example
 This Recipe will create 1mB Water in every Tick, if the well is placed in the biome minecraft:plains in the dimension minecraft:overworld. In addition, it has to be placed on exactly Y-height 64, but the direction is not important. It must be placed on a dirt block and the input speed should be at least 64 rpm
 ```jsonc
 {
@@ -77,6 +81,7 @@ This Recipe will create 1mB Water in every Tick, if the well is placed in the bi
         "yMin": 64,
         "yMax": 64,
         "block": "minecraft:dirt",
+        "state": "[]",
         "rpm": 64
     },
     "output": {
@@ -86,21 +91,31 @@ This Recipe will create 1mB Water in every Tick, if the well is placed in the bi
 }
 ```
 
-### KubeJS
-This Recipe will create 100mB Water in every Tick, if the well is placed in the dimension minecraft:the_nether. In addition it has to be placed UpsideDown but the Y-height doesn't matter.
+## KubeJS Integration
+### Full Example
+Inside ```server.js```
 ```js
-event.custom({
-    "type": "create_wells:fluid_extraction",
-    "condition": {
-        "direction": "UPSIDE_DOWN",
-        "biome": [  ],
-        "dimension": [ "minecraft:the_nether" ],
-        "yMin": -255,
-        "yMax": -255
-    },
-    "output": {
-        "fluid": "minecraft:lava",
-        "amount": 100
-    }
-});
+ServerEvents.recipes(event => {
+    //Water in Overworld Plains, Y 60-70, on Lit Redstone Lamp, minimum 128 rpm
+    event.recipes.create_wells.add_fluid_extraction('minecraft:water', 50)
+        .direction('NORMAL')
+        .y(60, 70)
+        .block('minecraft:redstone_lamp')
+        .state('[lit=true]')
+        .rpm(128)
+        .biome('minecraft:plains')
+        .dimension('minecraft:overworld');
+}
 ```
+
+### Available KubeJS Methods
+
+| Method | Description |
+|--------|-------------|
+| `direction('NORMAL'/'UPSIDE_DOWN'/'BOTH')` | Sets well orientation |
+| `yMin(int)` / `yMax(int)` / `y(int,int)` | Sets Y-level bounds |
+| `block(string)` / `block(string,state)` | Sets block or block + state requirement |
+| `state(string)` | Sets block state, e.g., `[lit=true]` |
+| `rpm(int)` | Minimum rotation speed of the Create network |
+| `biome(...strings)` | Restricts to specific biomes |
+| `dimension(...strings)` | Restricts to specific dimensions |

@@ -3,6 +3,7 @@ package de.thetechnicboy.create_wells;
 import com.mojang.logging.LogUtils;
 import de.thetechnicboy.create_wells.block.ModBlocks;
 import de.thetechnicboy.create_wells.client.WellRenderer;
+import de.thetechnicboy.create_wells.datagen.DataGenerators;
 import de.thetechnicboy.create_wells.item.ModItems;
 import de.thetechnicboy.create_wells.ponder.ModPonder;
 import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
@@ -36,6 +37,7 @@ public class CreateWells {
         ModItems.register(modEventBus);
         AllRecipeTypes.register(modEventBus);
         ModCreativeTab.register(modEventBus);
+        DataGenerators.register(modEventBus);
 
         modEventBus.register(ModBlocks.class);
 

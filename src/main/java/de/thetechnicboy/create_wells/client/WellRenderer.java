@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.ShaftRenderer;
+import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringRenderer;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.mechanical_well.entity.MechanicalWellEntity;
 import net.createmod.catnip.render.CachedBuffers;
@@ -32,6 +33,7 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
 
     @Override
     public void renderSafe(MechanicalWellEntity well, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        //super.renderSafe(well, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         FluidStack fluid = well.getTank().getPrimaryHandler().getFluid();
 
         if (!fluid.isEmpty()) {
@@ -39,6 +41,9 @@ public class WellRenderer extends ShaftRenderer<MechanicalWellEntity> {
         }
 
         renderShaft(well, poseStack, bufferSource, packedLight);
+
+        FilteringRenderer.renderOnBlockEntity(well, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+
     }
 
     @Override

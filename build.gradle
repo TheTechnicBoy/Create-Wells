@@ -21,9 +21,10 @@ repositories {
     }
 
     maven {
+        name 'JitPack'
         url 'https://jitpack.io'
         content {
-            includeGroup "com.github.rtyley"
+            includeGroupByRegex '(io|com)\\.github\\..*'
         }
     }
 
@@ -107,6 +108,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
+    api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+    interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
@@ -114,6 +118,8 @@ dependencies {
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
     implementation("mezz.jei:jei-${jei_minecraft_version}-neoforge:${jei_version}")
+
+
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

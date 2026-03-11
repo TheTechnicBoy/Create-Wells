@@ -3,10 +3,13 @@ package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import de.thetechnicboy.create_wells.Config;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -16,14 +19,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -34,6 +42,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     public static int tankCapacity = Config.MECHANICAL_WELL_CAPACITY.get();
     private boolean initialized;
     private SmartFluidTankBehaviour tank;
+    private FilteringBehaviour filtering;
 
 
     public MechanicalWellEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
@@ -72,7 +81,34 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         tank = SmartFluidTankBehaviour.single(this, tankCapacity);
         tank.getPrimaryHandler().setValidator(fluid -> {return true;});
         behaviour.add(tank);
+        filtering = new FilteringBehaviour(this, new WellValueBox(this))
+                .withCallback(newFilter -> {
+                    cachedFluidOutput = null;
+                })
+                .forFluids()
+                .withPredicate(stack -> {
+                    IFluidHandlerItem handler = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElseThrow();
+                    return handler.getTanks() > 0 && !handler.getFluidInTank(0).isEmpty();
+                });
+        behaviour.add(filtering);
         super.addBehaviours(behaviour);
+    }
+
+    public ArrayList<Fluid> getFilteredFluid() {
+        ArrayList<Fluid> fluids = new ArrayList<>();
+        if (level != null && level.isClientSide()) return fluids;
+
+        ItemStack filterStack = filtering.getFilter();
+        if (filterStack.isEmpty()) return fluids;
+
+        IFluidHandlerItem handler = filterStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElseThrow();
+//        if (handler == null) return fluids;
+
+        FluidStack fluid = handler.getFluidInTank(0);
+        if (fluid.isEmpty()) return fluids;
+
+        fluids.add(fluid.getFluid());
+        return fluids;
     }
 
     @Override
@@ -92,6 +128,8 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     @Override
     public void tick(){
         super.tick();
+
+        if (level != null && level.isClientSide()) return;
 
         if(tickCounter % 20 == 0 || cachedFluidOutput == null) {
             cachedFluidOutput = this.getFluidToFill();
@@ -129,6 +167,8 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
     protected FluidExtractionRecipe.FluidOutput getFluidToFill(){
 
+        List<Fluid> filteredFluids = getFilteredFluid();
+
         List<FluidExtractionRecipe> _AllRecipes = new ArrayList<>();
         List<FluidExtractionRecipe> _Recipes = new ArrayList<>();
         FluidExtractionRecipe.FluidOutput OUTPUT = new FluidExtractionRecipe.FluidOutput(FluidStack.EMPTY.getFluid(), 0);
@@ -137,10 +177,13 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
             if(recipe instanceof FluidExtractionRecipe) _AllRecipes.add( (FluidExtractionRecipe) recipe);
         });
 
-        for(int i = 0; i < _AllRecipes.size(); i++){
-            FluidExtractionRecipe recipe    = _AllRecipes.get(i);
-            if(checkConditions(recipe.getCondition())) _Recipes.add(recipe);
-        };
+        _AllRecipes.forEach(recipe -> {
+            if (!checkConditions(recipe.getCondition())) return;
+
+            if(!filteredFluids.isEmpty() && !filteredFluids.contains(recipe.getOutput().getFluid())) return;
+
+            _Recipes.add(recipe);
+        });
 
         if(!_Recipes.isEmpty()) OUTPUT = _Recipes.get(0).getOutput();
         return OUTPUT;
@@ -209,5 +252,27 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     }
 
 
+    public
 
+
+    static class WellValueBox extends ValueBoxTransform.Sided {
+
+        private MechanicalWellEntity be;
+
+        public WellValueBox(MechanicalWellEntity be) {
+            this.be = be;
+        }
+
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 12, 16.05);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            Direction.Axis axis = be.getBlockState().getValue(MechanicalWellBlock.AXIS);
+            return direction.getAxis() == axis;
+        }
+
+    }
 }

@@ -204,7 +204,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     }
 
     public static float getFluidRenderHeight(int amount, int capacity, boolean upsideDown) {
-        float height = amount * 14F / (16 * capacity) + (2F / 16);
+        float height = amount * 14F / (16 * capacity) + (1.99F / 16);
         return upsideDown ? 1 - height : height;
     }
 

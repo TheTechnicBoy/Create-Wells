@@ -100,14 +100,6 @@ repositories {
         name = 'architectury maven'
     }
     maven {
-        url = 'https://maven.saps.dev/minecraft'
-        name = 'saps.dev Maven'
-    }
-    maven {
-        name = "Progwml6's maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
@@ -115,12 +107,18 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-
     maven {
-        name = "Create, Ponder, Flywheel"
+        name = "Create and Ponder"
         url = "https://maven.createmod.net"
     }
-
+    maven {
+        name = "Flywheel (Engine Room)"
+        url = "https://maven.engineroom.dev/releases"
+    }
+    maven {
+        name = "KubeJS and Rhino"
+        url = "https://maven.latvian.dev/releases"
+    }
     maven {
         name = "ForgeConfigAPI"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"

@@ -2,7 +2,6 @@ package de.thetechnicboy.create_wells.jei;
 
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.jei.animations.AnimatedMechanicalWell;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -15,12 +14,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -28,8 +24,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.Style;
 import java.util.ArrayList;
 import java.util.List;
 

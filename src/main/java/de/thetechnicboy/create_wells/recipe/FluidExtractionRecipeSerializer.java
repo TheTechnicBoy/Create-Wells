@@ -1,17 +1,11 @@
 package de.thetechnicboy.create_wells.recipe;
 
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.thetechnicboy.create_wells.CreateWells;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-
-import java.util.ArrayList;
 
 public class FluidExtractionRecipeSerializer implements RecipeSerializer<FluidExtractionRecipe> {
     @Override

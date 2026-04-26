@@ -3,12 +3,10 @@ package de.thetechnicboy.create_wells.kubejs;
 import de.thetechnicboy.create_wells.CreateWells;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
-import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.StringComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.IntBounds;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 

@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FluidExtractionKubeRecipe extends KubeRecipe {

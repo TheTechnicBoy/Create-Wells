@@ -1,8 +1,5 @@
 package de.thetechnicboy.create_wells.block.mechanical_well.entity;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -10,10 +7,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import de.thetechnicboy.create_wells.Config;
-import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
-import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
+import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +36,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class MechanicalWellEntity extends KineticBlockEntity implements IHaveGoggleInformation, ICapabilityProvider<BlockPos, Direction, IFluidHandler> {
 
@@ -52,7 +51,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
     public MechanicalWellEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
         super(type, pos, state);
-
+        setLazyTickRate(20);
     }
 
     @Override
@@ -112,8 +111,13 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         return null;
     }
 
-    private int tickCounter = 0;
     private FluidExtractionRecipe.FluidOutput cachedFluidOutput;
+
+    @Override
+    public void lazyTick() {
+        super.lazyTick();
+        cachedFluidOutput = this.getFluidToFill();
+    }
 
     @Override
     public void tick(){
@@ -121,10 +125,9 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         if (level != null && level.isClientSide()) return;
 
-        if(tickCounter % 20 == 0 || cachedFluidOutput == null) {
+        if(cachedFluidOutput == null) {
             cachedFluidOutput = this.getFluidToFill();
         }
-        tickCounter++;
 
         FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
         FluidStack newFluid = new FluidStack(cachedFluidOutput.getFluid(), cachedFluidOutput.getAmount() + oldFluid.getAmount());
@@ -255,7 +258,6 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         return level.getBlockState(otherPos);
     }
 
-
     public SmartFluidTankBehaviour getTank(){return tank;}
 
     @Override
@@ -276,8 +278,6 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
-
-    public
 
 
     static class WellValueBox extends ValueBoxTransform.Sided {

@@ -16,7 +16,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FluidExtractionRecipe implements Recipe<Inventory> {
@@ -55,7 +57,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             System.out.println("[CW Recipes]     DIMENSIONS:");
             for (ResourceLocation dimension : condition.dimension) System.out.println("          " + dimension.toString());
             System.out.println("[CW Recipes]     Block: " + (condition.BlockTag ? "#" : "") + condition.block);
-            System.out.println("[CW Recipes]     NBT: " + condition.nbt);
+            System.out.println("[CW Recipes]     State: " + condition.state);
             System.out.println("[CW Recipes]     RPM: " + condition.rpm);
             System.out.println("---------------");
         }
@@ -176,7 +178,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         private final int yMax;
         private final ResourceLocation block;
         private final boolean BlockTag;
-        private final String nbt;
+        private final String state;
         private final int rpm;
 
 
@@ -201,12 +203,12 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
         public boolean isBlockTag() {
             return BlockTag;
         }
-        public String getNbt() {return nbt;}
+        public String getState() {return state;}
         public int getRPM() {
             return rpm;
         }
 
-        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag, String nbt, int rpm) {
+        public Condition(Direction direction, List<ResourceLocation> biome, List<ResourceLocation> dimension, int yMin, int yMax, ResourceLocation block, boolean BlockTag, String state, int rpm) {
             this.direction = direction;
             this.biome = biome;
             this.dimension = dimension;
@@ -214,7 +216,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             this.yMax = yMax;
             this.block = block;
             this.BlockTag = BlockTag;
-            this.nbt = nbt;
+            this.state = state;
             this.rpm = rpm;
         }
 
@@ -225,7 +227,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
             int yMin = -255;
             int yMax = -255;
             ResourceLocation block = null;
-            String nbt = "[]";
+            String state = "[]";
             boolean blockTag = false;
             int rpm = 0;
 
@@ -259,9 +261,9 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             try{
                 if(!blockTag){
-                    String tempNbt = jsonObject.get("nbt").getAsString();
-                    if(tempNbt.startsWith("[") && tempNbt.endsWith("]")){
-                        nbt = tempNbt;
+                    String tempState = jsonObject.get("state").getAsString();
+                    if(tempState.startsWith("[") && tempState.endsWith("]")){
+                        state = tempState;
                     }
                 }
             }catch(Exception ex) {}
@@ -271,7 +273,7 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             try{ rpm = jsonObject.get("rpm").getAsInt(); } catch (Exception ex) {}
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, nbt, rpm);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, state, rpm);
         }
 
         public static Condition fromPacket(FriendlyByteBuf buf) {
@@ -299,11 +301,11 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             ResourceLocation block = buf.readResourceLocation();
             boolean blockTag = buf.readBoolean();
-            String nbt = buf.readUtf();
+            String state = buf.readUtf();
 
             int rpm = buf.readInt();
 
-            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, nbt, rpm);
+            return new Condition(direction, biomes, dimensions, yMin, yMax, block, blockTag, state, rpm);
         }
 
         public void writeToPacket(FriendlyByteBuf buf) {
@@ -326,9 +328,32 @@ public class FluidExtractionRecipe implements Recipe<Inventory> {
 
             buf.writeResourceLocation(this.block);
             buf.writeBoolean(this.BlockTag);
-            buf.writeUtf(this.nbt);
+            buf.writeUtf(this.state);
 
             buf.writeInt(this.rpm);
+        }
+
+        public Map<String, String> requiredProperties() {
+            Map<String, String> requiredProperties = new HashMap<>();
+            String trimmed = getState().trim();
+            String propertiesString = trimmed.substring(1, trimmed.length() - 1);
+            if(!propertiesString.trim().isEmpty()){
+                String[] pairs = propertiesString.split(",");
+                for (String pair : pairs) {
+                    pair = pair.trim();
+
+                    if (pair.contains("=")) {
+                        String[] parts = pair.split("=", 2);
+                        if (parts.length == 2) {
+                            String key = parts[0].trim();
+                            String value = parts[1].trim();
+                            requiredProperties.put(key, value);
+                        }
+                    }
+                }
+            }
+
+            return requiredProperties;
         }
     }
 

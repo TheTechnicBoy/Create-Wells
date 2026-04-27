@@ -46,6 +46,9 @@ This mod adds wells to Minecraft, enhancing the exploration and fluid generation
     //The Block which the Wells should stand on
     // tags are also supported -> #forge:stones
     "block": "minecraft:dirt",
+    
+    //The State of the Block e.g. [lit=true] for redstone lamps
+    "state": "[]",
 
     //The Minimum Spped of the Create Network
     "rpm": 128
@@ -77,6 +80,7 @@ This Recipe will create 1mB Water in every Tick, if the well is placed in the bi
         "yMin": 64,
         "yMax": 64,
         "block": "minecraft:dirt",
+        "state": "[]",
         "rpm": 64
     },
     "output": {

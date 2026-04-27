@@ -20,7 +20,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +29,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -47,12 +45,11 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
     public MechanicalWellEntity(BlockEntityType<?> type, BlockPos pos, BlockState state){
         super(type, pos, state);
-
+        setLazyTickRate(20);
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        //ObservePacket.send(worldPosition, 0);
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return containedFluidTooltip(tooltip, isPlayerSneaking, this.getCapability(ForgeCapabilities.FLUID_HANDLER));
     }
@@ -122,8 +119,14 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         tank.write(compoundTag, clientPacket);
     }
 
-    private int tickCounter = 0;
+
     private FluidExtractionRecipe.FluidOutput cachedFluidOutput;
+
+    @Override
+    public void lazyTick() {
+        super.lazyTick();
+        cachedFluidOutput = this.getFluidToFill();
+    }
 
     @Override
     public void tick(){
@@ -131,10 +134,9 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         if (level != null && level.isClientSide()) return;
 
-        if(tickCounter % 20 == 0 || cachedFluidOutput == null) {
+        if(cachedFluidOutput == null) {
             cachedFluidOutput = this.getFluidToFill();
         }
-        tickCounter++;
 
         FluidStack oldFluid = tank.getPrimaryHandler().getFluid();
         FluidStack newFluid = new FluidStack(cachedFluidOutput.getFluid(), cachedFluidOutput.getAmount() + oldFluid.getAmount());
@@ -252,10 +254,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
     }
 
 
-    public
-
-
-    static class WellValueBox extends ValueBoxTransform.Sided {
+    public static class WellValueBox extends ValueBoxTransform.Sided {
 
         private MechanicalWellEntity be;
 

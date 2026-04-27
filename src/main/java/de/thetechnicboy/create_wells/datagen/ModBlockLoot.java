@@ -1,12 +1,13 @@
 package de.thetechnicboy.create_wells.datagen;
 
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.registries.RegistryObject;
+
 import java.util.Set;
 
 public class ModBlockLoot extends BlockLootSubProvider {

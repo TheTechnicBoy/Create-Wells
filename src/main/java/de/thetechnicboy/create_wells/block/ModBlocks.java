@@ -3,7 +3,6 @@ package de.thetechnicboy.create_wells.block;
 import de.thetechnicboy.create_wells.CreateWells;
 import de.thetechnicboy.create_wells.block.mechanical_well.*;
 import de.thetechnicboy.create_wells.block.mechanical_well.entity.*;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

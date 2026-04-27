@@ -9,7 +9,6 @@ import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;

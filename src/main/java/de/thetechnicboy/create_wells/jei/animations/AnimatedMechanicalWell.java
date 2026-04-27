@@ -1,11 +1,10 @@
 package de.thetechnicboy.create_wells.jei.animations;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import com.mojang.math.Axis;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
-import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.block.ModBlocks;
+import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import java.util.List;
 
 

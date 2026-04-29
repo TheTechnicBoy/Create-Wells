@@ -32,7 +32,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -320,7 +319,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         @Override
         protected boolean isSideActive(BlockState state, Direction direction) {
-            Direction.Axis axis = be.getBlockState().getValue(MechanicalWellBlock.AXIS);
+            Direction.Axis axis = be.getBlockState().getValue(MechanicalWellBlock.HORIZONTAL_AXIS);
             return direction.getAxis() == axis;
         }
 

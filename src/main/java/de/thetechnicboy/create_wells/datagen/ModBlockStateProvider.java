@@ -45,82 +45,82 @@ public class ModBlockStateProvider extends BlockStateProvider {
         this.getVariantBuilder(ModBlocks.BLACK_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: blackWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.BLUE_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: blueWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.BROWN_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: brownWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.CYAN_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: cyanWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.GRAY_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: grayWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.GREEN_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: greenWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.LIGHT_BLUE_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: lightBlueWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.LIGHT_GRAY_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: lightGrayWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.LIME_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: limeWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.MAGENTA_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: magentaWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.ORANGE_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: orangeWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.PINK_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: pinkWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.PURPLE_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: purpleWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.RED_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: redWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.WHITE_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: whiteWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
         this.getVariantBuilder(ModBlocks.YELLOW_MECHANICAL_WELL.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(state.getValue(MechanicalWellBlock.HALF).equals(DoubleBlockHalf.LOWER) ? WellBase: yellowWellRoof)
                 .rotationX(state.getValue(MechanicalWellBlock.UPSIDE_DOWN) ? 180 : 0)
-                .rotationY(state.getValue(MechanicalWellBlock.AXIS).equals(Direction.Axis.X) ? 0: 90)
+                .rotationY(state.getValue(MechanicalWellBlock.HORIZONTAL_AXIS).equals(Direction.Axis.X) ? 0: 90)
                 .build());
     }
 

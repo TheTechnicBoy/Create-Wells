@@ -295,7 +295,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         @Override
         protected boolean isSideActive(BlockState state, Direction direction) {
-            Direction.Axis axis = be.getBlockState().getValue(MechanicalWellBlock.AXIS);
+            Direction.Axis axis = be.getBlockState().getValue(MechanicalWellBlock.HORIZONTAL_AXIS);
             return direction.getAxis() == axis;
         }
 

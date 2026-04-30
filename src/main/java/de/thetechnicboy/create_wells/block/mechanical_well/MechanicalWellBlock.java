@@ -1,6 +1,7 @@
 package de.thetechnicboy.create_wells.block.mechanical_well;
 
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
+import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import de.thetechnicboy.create_wells.block.mechanical_well.entity.MechanicalWellEntity;
 import net.minecraft.core.BlockPos;
@@ -23,9 +24,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock implements IBE<MechanicalWellEntity> {
+public abstract class MechanicalWellBlock extends HorizontalAxisKineticBlock implements IBE<MechanicalWellEntity> {
 
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.HORIZONTAL_AXIS;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -54,7 +54,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
                 .noOcclusion()
                 .isViewBlocking((state, level, pose) -> false));
         this.registerDefaultState(this.getStateDefinition().any()
-                .setValue(AXIS, Direction.Axis.X)
+                .setValue(HORIZONTAL_AXIS, Direction.Axis.X)
                 .setValue(HALF, DoubleBlockHalf.LOWER)
                 .setValue(UPSIDE_DOWN, false)
                 .setValue(FACING, Direction.NORTH));
@@ -63,7 +63,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(AXIS, HALF, UPSIDE_DOWN, FACING);
+        builder.add(HORIZONTAL_AXIS, HALF, UPSIDE_DOWN, FACING);
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         if (pos.getY() < level.getMaxBuildHeight() - 1) {
             if (level.getBlockState(pos.above()).canBeReplaced(context)) {
                 return this.defaultBlockState()
-                        .setValue(AXIS, axis)
+                        .setValue(HORIZONTAL_AXIS, axis)
                         .setValue(UPSIDE_DOWN, false)
                         .setValue(FACING, facing);
             }
@@ -90,7 +90,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         if (pos.getY() > level.getMinBuildHeight() + 1) {
             if (level.getBlockState(pos.below()).canBeReplaced(context)) {
                 return this.defaultBlockState()
-                        .setValue(AXIS, axis)
+                        .setValue(HORIZONTAL_AXIS, axis)
                         .setValue(UPSIDE_DOWN, true)
                         .setValue(FACING, facing);
             }
@@ -106,6 +106,18 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
         Direction flippedDir2 = state.getValue(UPSIDE_DOWN) ? Direction.UP : Direction.DOWN;
         if (direction.getAxis() != Direction.Axis.Y || ((half == DoubleBlockHalf.LOWER) != (direction == flippedDir1)) || (neighborState.is(this) && (neighborState.getValue(HALF) != half))) {
             if ((half != DoubleBlockHalf.LOWER) || (direction != flippedDir2) || state.canSurvive(level, currentPos)) {
+                // Update the other half to face the right way
+                if (neighborState.getBlock() instanceof MechanicalWellBlock){
+                    if ((state.getValue(HORIZONTAL_AXIS) != neighborState.getValue(HORIZONTAL_AXIS))
+                            && neighborPos.equals(
+                            (half == DoubleBlockHalf.LOWER) == state.getValue(UPSIDE_DOWN) ?
+                                    currentPos.below() :
+                                    currentPos.above()
+                    )
+                    ){
+                        level.setBlock(neighborPos, neighborState.setValue(HORIZONTAL_AXIS, state.getValue(HORIZONTAL_AXIS)), 22);
+                    }
+                }
                 return state;
             }
         }
@@ -150,7 +162,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(SHAPE_BASE) : SHAPE_BASE;
-        } else if (state.getValue(AXIS) == Direction.Axis.X) {
+        } else if (state.getValue(HORIZONTAL_AXIS) == Direction.Axis.X) {
             return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(SHAPE_ROOF) : SHAPE_ROOF;
         } else return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(flipShapeXZ(SHAPE_ROOF)) : flipShapeXZ(SHAPE_ROOF);
     }
@@ -159,7 +171,7 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(SHAPE_BASE) : SHAPE_BASE;
-        } else if (state.getValue(AXIS) == Direction.Axis.X) {
+        } else if (state.getValue(HORIZONTAL_AXIS) == Direction.Axis.X) {
             return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(SHAPE_INNER_SUPPORT) : SHAPE_INNER_SUPPORT;
         } else return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(flipShapeXZ(SHAPE_INNER_SUPPORT)) : flipShapeXZ(SHAPE_INNER_SUPPORT);
     }
@@ -173,23 +185,14 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
     public VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             return Shapes.block();
-        } else if (state.getValue(AXIS) == Direction.Axis.X) {
+        } else if (state.getValue(HORIZONTAL_AXIS) == Direction.Axis.X) {
             return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(SHAPE_ROOF) : SHAPE_ROOF;
         } else return state.getValue(UPSIDE_DOWN) ? flipShapeUpsideDown(flipShapeXZ(SHAPE_ROOF)) : flipShapeXZ(SHAPE_ROOF);
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        Direction facing = state.getValue(FACING);
-        Direction rotatedFacing = rot.rotate(facing);
-
-        Direction.Axis axis = state.getValue(AXIS);
-        if (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) {
-            if (axis == Direction.Axis.X) axis = Direction.Axis.Z;
-            else if (axis == Direction.Axis.Z) axis = Direction.Axis.X;
-        }
-
-        return state.setValue(FACING, rotatedFacing).setValue(AXIS, axis);
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return super.rotate(state, rotation);
     }
 
     @Override
@@ -221,12 +224,12 @@ public abstract class MechanicalWellBlock extends DirectionalAxisKineticBlock im
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
+        return state.getValue(HORIZONTAL_AXIS) == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
     }
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return !(face.getAxis() == state.getValue(AXIS));
+        return !(face.getAxis() == state.getValue(HORIZONTAL_AXIS));
     }
 
 }

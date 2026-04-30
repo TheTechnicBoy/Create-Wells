@@ -32,7 +32,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,30 +229,18 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         Map<String, String> requiredProperties = conditions.requiredProperties();
 
-        if(requiredProperties.isEmpty()) System.out.println("NO REQUIRED PROPERTIES");
-
         for (Map.Entry<String, String> requiredProperty : requiredProperties.entrySet()) {
             String propertyName = requiredProperty.getKey();
             String requiredValue = requiredProperty.getValue();
-
-            System.out.println("Need property: " + propertyName + " with value: " + requiredValue);
 
             boolean propertyFound = false;
             boolean valueMatches = false;
 
             for (var property : blockBelowState.getProperties()) {
-                System.out.println("Found property: " + propertyName + " with value: " + blockBelowState.getValue(property).toString());
                 if (property.getName().equals(propertyName)) {
-                    System.out.println("FOUND PROPERTY: " + propertyName);
                     propertyFound = true;
                     String actualValue = blockBelowState.getValue(property).toString();
                     valueMatches = actualValue.equals(requiredValue);
-
-                    if(valueMatches) {
-                        System.out.println("VALUE MATCHES: " + actualValue);
-                    } else {
-                        System.out.println("VALUE DOES NOT MATCH: " + actualValue);
-                    }
 
                     break;
                 }

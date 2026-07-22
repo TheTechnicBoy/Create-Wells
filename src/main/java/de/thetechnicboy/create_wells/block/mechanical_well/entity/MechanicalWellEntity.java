@@ -10,6 +10,7 @@ import de.thetechnicboy.create_wells.Config;
 import de.thetechnicboy.create_wells.block.mechanical_well.MechanicalWellBlock;
 import de.thetechnicboy.create_wells.recipe.AllRecipeTypes;
 import de.thetechnicboy.create_wells.recipe.FluidExtractionRecipe;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +35,7 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -177,7 +179,7 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
             _Recipes.add(r);
         });
 
-        if(!_Recipes.isEmpty()) OUTPUT = _Recipes.get(0).getOutput();
+        if(!_Recipes.isEmpty()) OUTPUT = _Recipes.getFirst().getOutput();
         return OUTPUT;
     }
 
@@ -190,7 +192,6 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
 
         if(!conditions.getDimension().isEmpty() && !conditions.getDimension().contains(getDimension())) return false;
         if(!conditions.getBiome().isEmpty() && !conditions.getBiome().contains(getBiome())) return false;
-
 
         BlockState blockBelowState = getBelowBlock();
         Block blockBelow = blockBelowState.getBlock();
@@ -246,12 +247,23 @@ public abstract class MechanicalWellEntity extends KineticBlockEntity implements
         return true;
     }
 
-
     public boolean isUpsideDown(){
         return this.getBlockState().getValue(MechanicalWellBlock.UPSIDE_DOWN);
     }
-    public ResourceLocation getBiome(){ return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(this.getBlockPos()).value()); }
-    public int getYPos(){ return this.getBlockPos().getY() ;}
+    public ResourceLocation getBiome(){
+        Vector3d position = new Vector3d(super.getBlockPos().getX(), super.getBlockPos().getY(), super.getBlockPos().getZ());
+        position = SableCompanion.INSTANCE.projectOutOfSubLevel(level, position);
+        BlockPos projectedPos = new BlockPos((int) Math.round(position.x()), (int) Math.round(position.y()), (int) Math.round(position.z()));
+
+        return this.getLevel().registryAccess().registryOrThrow(Registries.BIOME).getKey(this.getLevel().getBiome(projectedPos).value());
+    }
+    public int getYPos(){
+        Vector3d position = new Vector3d(super.getBlockPos().getX(), super.getBlockPos().getY(), super.getBlockPos().getZ());
+        position = SableCompanion.INSTANCE.projectOutOfSubLevel(level, position);
+        BlockPos projectedPos = new BlockPos((int) Math.round(position.x()), (int) Math.round(position.y()), (int) Math.round(position.z()));
+
+        return projectedPos.getY() ;
+    }
     public ResourceLocation getDimension(){ return this.getLevel().dimension().location();}
     public BlockState getBelowBlock() {
         BlockPos otherPos = this.getBlockPos().below(isUpsideDown() ? -1 : 1);

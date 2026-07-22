@@ -50,6 +50,15 @@ repositories {
         name = "ForgeConfigAPI"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
     }
+
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
 }
 
 base {
@@ -119,6 +128,11 @@ dependencies {
 
     implementation("mezz.jei:jei-${jei_minecraft_version}-neoforge:${jei_version}")
 
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${sable_companion_version},)")) {
+        version {
+            prefer(sable_companion_version)
+        }
+    }
 
 }
 
